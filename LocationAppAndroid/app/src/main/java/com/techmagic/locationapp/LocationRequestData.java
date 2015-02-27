@@ -1,17 +1,21 @@
 package com.techmagic.locationapp;
 
-public enum LocationRequestData {
-    FREQUENCY_HIGH(5000, 5000),
-    FREQUENCY_MEDIUM(15 * 60 * 1000, 5 * 60 * 1000),
-    FREQUENCY_LOW(60 * 60 * 1000, 25 * 60 * 1000);
+import com.google.android.gms.location.LocationRequest;
 
-    LocationRequestData(int interval, int fastestInterval) {
+public enum LocationRequestData {
+    FREQUENCY_HIGH(5000, 5000, LocationRequest.PRIORITY_HIGH_ACCURACY),
+    FREQUENCY_MEDIUM(15 * 60 * 1000, 5 * 60 * 1000, LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY),
+    FREQUENCY_LOW(60 * 60 * 1000, 25 * 60 * 1000, LocationRequest.PRIORITY_LOW_POWER);
+
+    LocationRequestData(int interval, int fastestInterval, int priority) {
         this.interval = interval;
         this.fastestInterval = fastestInterval;
+        this.priority = priority;
     }
 
     private int interval;
     private int fastestInterval;
+    private int priority;
 
     public int getInterval() {
         return interval;
@@ -19,5 +23,9 @@ public enum LocationRequestData {
 
     public int getFastestInterval() {
         return fastestInterval;
+    }
+
+    public int getPriority() {
+        return priority;
     }
 }

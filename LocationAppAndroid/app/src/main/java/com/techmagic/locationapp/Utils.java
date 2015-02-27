@@ -1,6 +1,9 @@
 package com.techmagic.locationapp;
 
-public class CoordinatesUtil {
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+public class Utils {
 
     public static float distFromCoordinates(float lat1, float lng1, float lat2, float lng2) {
         double earthRadius = 6371000; //meters
@@ -13,5 +16,11 @@ public class CoordinatesUtil {
         float dist = (float) (earthRadius * c);
         return dist;
     }
+
+    public static String formatTime(long milis) {
+        String time = new SimpleDateFormat("HH:mm:ss").format(new Date(milis));
+        return time;
+    }
+
 
 }

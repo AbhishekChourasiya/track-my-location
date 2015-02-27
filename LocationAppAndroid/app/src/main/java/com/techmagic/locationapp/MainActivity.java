@@ -6,7 +6,6 @@ import android.location.Location;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -15,13 +14,15 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.techmagic.locationapp.data.DataHelper;
+import com.techmagic.locationapp.data.model.LocationData;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import butterknife.OnClick;
 
 
 public class MainActivity extends ActionBarActivity implements GoogleApiClient.ConnectionCallbacks,
@@ -30,6 +31,7 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
     private static final String TAG = MainActivity.class.getCanonicalName();
     private static final int REQUEST_RESOLVE_ERROR = 9999;
     private GoogleApiClient googleApiClient ;
+    private LocationApplication app;
     private boolean resolvingError;
 
     private Location startLocation;
@@ -46,6 +48,9 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.inject(this);
+
+        app = (LocationApplication) getApplication();
+        app.setLocationRequestData(LocationRequestData.FREQUENCY_MEDIUM);
 
         createGoogleApiClient();
     }
@@ -111,9 +116,9 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
     }
 
     private void startLocationUpdates() {
-//        LocationRequest locationRequest = createLocationRequest();
-//        LocationServices.FusedLocationApi.requestLocationUpdates(
-//                googleApiClient, locationRequest, this);
+        LocationRequest locationRequest = app.createLocationRequest();
+        LocationServices.FusedLocationApi.requestLocationUpdates(
+                googleApiClient, locationRequest, this);
 
         startService(new Intent(this, TrackLocationService.class));
     }
@@ -127,6 +132,9 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
         if (location != null) {
             double latitude = location.getLatitude();
             double longitude = location.getLongitude();
+
+            DataHelper.getInstance().saveLocation(LocationData.getInstance(latitude,longitude));
+
             tvLatitude.setText(String.valueOf(latitude));
             tvLongitude.setText(String.valueOf(longitude));
             double deltaLatitude = Math.abs(startLocation.getLatitude() - latitude);
@@ -134,9 +142,9 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
             tvLatitudeDelta.setText(String.format("%.9f", deltaLatitude));
             tvLongitudeDelta.setText(String.format("%.9f", deltaLongitude));
 
-            String time = new SimpleDateFormat("HH:mm:ss").format(new Date());
+            String time = Utils.formatTime(System.currentTimeMillis());
             tvLastUpdate.setText(time);
-            float distance = CoordinatesUtil.distFromCoordinates((float) startLocation.getLatitude(),
+            float distance = Utils.distFromCoordinates((float) startLocation.getLatitude(),
                     (float) startLocation.getLongitude(),
                     (float) latitude,
                     (float) longitude);
@@ -151,15 +159,6 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
                 .addOnConnectionFailedListener(this)
                 .addApi(LocationServices.API)
                 .build();
-    }
-
-    private LocationRequest createLocationRequest() {
-        LocationRequestData data = LocationRequestData.FREQUENCY_MEDIUM;
-        LocationRequest locationRequest = new LocationRequest();
-        locationRequest.setInterval(data.getInterval());
-        locationRequest.setFastestInterval(data.getFastestInterval());
-        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        return locationRequest;
     }
 
     private void connectGoogleApiClient() {

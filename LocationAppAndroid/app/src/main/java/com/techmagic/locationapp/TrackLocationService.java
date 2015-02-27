@@ -2,12 +2,9 @@ package com.techmagic.locationapp;
 
 import android.app.Notification;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.app.Service;
-import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentSender;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -19,14 +16,17 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.techmagic.locationapp.data.DataHelper;
+import com.techmagic.locationapp.data.model.LocationData;
 
 public class TrackLocationService extends Service implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
     private static final String TAG = TrackLocationService.class.getCanonicalName();
-    private GoogleApiClient googleApiClient ;
+    private GoogleApiClient googleApiClient;
     private Location startLocation;
-    private Notification notification;
+
+    private LocationApplication app;
 
     public TrackLocationService() {
     }
@@ -34,6 +34,8 @@ public class TrackLocationService extends Service implements GoogleApiClient.Con
     @Override
     public void onCreate() {
         super.onCreate();
+
+        app = (LocationApplication) getApplication();
     }
 
     @Override
@@ -103,7 +105,7 @@ public class TrackLocationService extends Service implements GoogleApiClient.Con
     }
 
     private void startLocationUpdates() {
-        LocationRequest locationRequest = createLocationRequest();
+        LocationRequest locationRequest = app.createLocationRequest();
         LocationServices.FusedLocationApi.requestLocationUpdates(
                 googleApiClient, locationRequest, this);
     }
@@ -113,25 +115,21 @@ public class TrackLocationService extends Service implements GoogleApiClient.Con
                 googleApiClient, this);
     }
 
-    private LocationRequest createLocationRequest() {
-        LocationRequestData data = LocationRequestData.FREQUENCY_MEDIUM;
-        LocationRequest locationRequest = new LocationRequest();
-        locationRequest.setInterval(data.getInterval());
-        locationRequest.setFastestInterval(data.getFastestInterval());
-        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        return locationRequest;
-    }
-
     private void updateLocationData(Location location) {
         double latitude = location.getLatitude();
         double longitude = location.getLongitude();
-        float distance = CoordinatesUtil.distFromCoordinates((float) startLocation.getLatitude(),
+        float distance = Utils.distFromCoordinates((float) startLocation.getLatitude(),
                 (float) startLocation.getLongitude(),
                 (float) latitude,
                 (float) longitude);
 
         String distanceText = String.format("%.2f m.", distance);
 
+        DataHelper.getInstance().saveLocation(LocationData.getInstance(latitude, longitude));
+        updateNotification(distanceText);
+    }
+
+    private void updateNotification(String distanceText) {
         int notificationId = 9999;
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
@@ -142,8 +140,8 @@ public class TrackLocationService extends Service implements GoogleApiClient.Con
         NotificationManager mNotificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-        notification = mBuilder.build();
-        mNotificationManager.notify(notificationId, mBuilder.build());
+        Notification notification = mBuilder.build();
+        mNotificationManager.notify(notificationId, notification);
     }
 
 }
