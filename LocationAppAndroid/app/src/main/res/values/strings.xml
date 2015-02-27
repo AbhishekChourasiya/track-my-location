@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">LocationApp</string>
 
-    <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
+    <string name="rb_high">High</string>
+    <string name="rb_medium">Medium</string>
+    <string name="rb_low">Low</string>
 </resources>

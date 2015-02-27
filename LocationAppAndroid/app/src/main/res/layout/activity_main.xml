@@ -2,15 +2,43 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center_vertical"
+    android:gravity="center"
     android:orientation="vertical"
     tools:context=".MainActivity">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Select updates frequency"/>
+
+    <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/radio_group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="50dp"
+        android:orientation="horizontal">
+
+        <RadioButton android:id="@+id/radio_high"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/rb_high"/>
+
+        <RadioButton android:id="@+id/radio_medium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/rb_medium"/>
+
+        <RadioButton android:id="@+id/radio_low_"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/rb_low"/>
+
+    </RadioGroup>
 
     <Button
         android:id="@+id/btn_start_tracking"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
         style="@style/TextAppearance.AppCompat.Title"
         android:text="Start tracking"/>
 
@@ -18,7 +46,6 @@
         android:id="@+id/btn_stop_tracking"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
         style="@style/TextAppearance.AppCompat.Title"
         android:text="Stop tracking"/>
 
@@ -26,7 +53,6 @@
         android:id="@+id/tv_last_update"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
         android:layout_margin="4dp"
         android:text="Last update time"/>
 
@@ -34,7 +60,6 @@
         android:id="@+id/tv_distance"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
         android:layout_margin="4dp"/>
 
     <LinearLayout

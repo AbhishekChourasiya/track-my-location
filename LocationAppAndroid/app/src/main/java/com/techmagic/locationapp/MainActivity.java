@@ -8,6 +8,7 @@ import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -47,6 +48,7 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
     @InjectView(R.id.tv_longitude_delta) TextView tvLongitudeDelta;
     @InjectView(R.id.tv_last_update) TextView tvLastUpdate;
     @InjectView(R.id.tv_distance) TextView tvDistance;
+    @InjectView(R.id.radio_group) RadioGroup radioGroup;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +57,8 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
         ButterKnife.inject(this);
 
         app = (LocationApplication) getApplication();
-        app.setLocationRequestData(LocationRequestData.FREQUENCY_MEDIUM);
+
+        setupRadioGroup();
     }
 
     @Override
@@ -160,6 +163,40 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
                 tvDistance.setText(distanceText);
             }
         }
+    }
+
+    private void setupRadioGroup() {
+
+        switch (app.getLocationRequestData()) {
+            case FREQUENCY_HIGH:
+                radioGroup.check(R.id.radio_high);
+                break;
+            case FREQUENCY_MEDIUM:
+                radioGroup.check(R.id.radio_medium);
+                break;
+            case FREQUENCY_LOW:
+                radioGroup.check(R.id.radio_low_);
+                break;
+        }
+
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                switch (checkedId) {
+                    case R.id.radio_high:
+                        app.setLocationRequestData(LocationRequestData.FREQUENCY_HIGH);
+                        break;
+                    case R.id.radio_medium:
+                        app.setLocationRequestData(LocationRequestData.FREQUENCY_MEDIUM);
+                        break;
+                    case R.id.radio_low_:
+                        app.setLocationRequestData(LocationRequestData.FREQUENCY_LOW);
+                        break;
+                }
+                stopTracking();
+                startTracking();
+            }
+        });
     }
 
     private void createGoogleApiClient() {
