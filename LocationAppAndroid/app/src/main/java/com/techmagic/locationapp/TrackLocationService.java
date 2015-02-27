@@ -23,8 +23,8 @@ public class TrackLocationService extends Service implements GoogleApiClient.Con
         GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
     private static final String TAG = TrackLocationService.class.getCanonicalName();
+    private int notificationId = 9999;
     private GoogleApiClient googleApiClient;
-    private Location startLocation;
 
     private LocationApplication app;
 
@@ -51,6 +51,8 @@ public class TrackLocationService extends Service implements GoogleApiClient.Con
     public void onDestroy() {
         super.onDestroy();
         stopLocationUpdates();
+        cancelNotification();
+        app.setStartLocation(null);
     }
 
     @Override
@@ -61,8 +63,8 @@ public class TrackLocationService extends Service implements GoogleApiClient.Con
     @Override
     public void onLocationChanged(Location location) {
         Log.d(TAG, "onLocationChanged");
-        if (startLocation == null) {
-            startLocation = location;
+        if (app.getStartLocation() == null) {
+            app.setStartLocation(location);
         }
         updateLocationData(location);
     }
@@ -116,6 +118,7 @@ public class TrackLocationService extends Service implements GoogleApiClient.Con
     }
 
     private void updateLocationData(Location location) {
+        Location startLocation = app.getStartLocation();
         double latitude = location.getLatitude();
         double longitude = location.getLongitude();
         float distance = Utils.distFromCoordinates((float) startLocation.getLatitude(),
@@ -125,12 +128,11 @@ public class TrackLocationService extends Service implements GoogleApiClient.Con
 
         String distanceText = String.format("%.2f m.", distance);
 
-        DataHelper.getInstance().saveLocation(LocationData.getInstance(latitude, longitude));
+        DataHelper.getInstance(this).saveLocation(LocationData.getInstance(latitude, longitude));
         updateNotification(distanceText);
     }
 
     private void updateNotification(String distanceText) {
-        int notificationId = 9999;
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
                         .setSmallIcon(R.drawable.ic_launcher)
@@ -142,6 +144,12 @@ public class TrackLocationService extends Service implements GoogleApiClient.Con
 
         Notification notification = mBuilder.build();
         mNotificationManager.notify(notificationId, notification);
+    }
+
+    private void cancelNotification() {
+        NotificationManager mNotificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        mNotificationManager.cancel(notificationId);
     }
 
 }

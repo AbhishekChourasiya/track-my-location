@@ -2,7 +2,9 @@ package com.techmagic.locationapp;
 
 import android.content.Intent;
 import android.content.IntentSender;
+import android.database.ContentObserver;
 import android.location.Location;
+import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -11,30 +13,33 @@ import android.widget.TextView;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.ErrorDialogFragment;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationListener;
-import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.techmagic.locationapp.data.Data;
 import com.techmagic.locationapp.data.DataHelper;
 import com.techmagic.locationapp.data.model.LocationData;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 
 
 public class MainActivity extends ActionBarActivity implements GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener, LocationListener {
+        GoogleApiClient.OnConnectionFailedListener {
 
     private static final String TAG = MainActivity.class.getCanonicalName();
     private static final int REQUEST_RESOLVE_ERROR = 9999;
     private GoogleApiClient googleApiClient ;
     private LocationApplication app;
     private boolean resolvingError;
+    private Handler handler = new Handler();
 
-    private Location startLocation;
+    private ContentObserver contentObserver = new ContentObserver(handler) {
+        @Override
+        public void onChange(boolean selfChange) {
+            super.onChange(selfChange);
+            updateLocationData();
+        }
+    };
 
     @InjectView(R.id.tv_latitude) TextView tvLatitude;
     @InjectView(R.id.tv_longitude) TextView tvLongitude;
@@ -51,14 +56,19 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
 
         app = (LocationApplication) getApplication();
         app.setLocationRequestData(LocationRequestData.FREQUENCY_MEDIUM);
-
-        createGoogleApiClient();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        connectGoogleApiClient();
+        registerContentObservers();
+        updateLocationData();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unRegisterContentObservers();
     }
 
     @Override
@@ -66,30 +76,15 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
         if (requestCode == REQUEST_RESOLVE_ERROR) {
             resolvingError = false;
             if (resultCode == RESULT_OK) {
-                // Make sure the app is not already connected or attempting to connect
                 connectGoogleApiClient();
             }
         }
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
-        stopLocationUpdates();
-    }
-
-    @Override
-    public void onLocationChanged(Location location) {
-        if (startLocation == null) {
-            startLocation = location;
-        }
-        updateLocationData(location);
-    }
-
-    @Override
     public void onConnected(Bundle bundle) {
         Log.d(TAG, "onConnected");
-        startLocationUpdates();
+        startTrackLocationService();
     }
 
     @Override
@@ -115,41 +110,55 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
         }
     }
 
-    private void startLocationUpdates() {
-        LocationRequest locationRequest = app.createLocationRequest();
-        LocationServices.FusedLocationApi.requestLocationUpdates(
-                googleApiClient, locationRequest, this);
+    @OnClick(R.id.btn_start_tracking)
+    public void startTracking() {
+        if (googleApiClient == null) {
+            createGoogleApiClient();
+        }
+        connectGoogleApiClient();
+    }
 
+    @OnClick(R.id.btn_stop_tracking)
+    public void stopTracking() {
+        stopService(new Intent(this, TrackLocationService.class));
+    }
+
+    private void startTrackLocationService() {
         startService(new Intent(this, TrackLocationService.class));
     }
 
-    private void stopLocationUpdates() {
-        LocationServices.FusedLocationApi.removeLocationUpdates(
-                googleApiClient, this);
+    private void registerContentObservers() {
+        getContentResolver().registerContentObserver(Data.LocationData.URI, false, contentObserver);
     }
 
-    private void updateLocationData(Location location) {
+    private void unRegisterContentObservers() {
+        getContentResolver().unregisterContentObserver(contentObserver);
+    }
+
+    private void updateLocationData() {
+        DataHelper dataHelper = DataHelper.getInstance(this);
+        LocationData location = dataHelper.getLastLocation();
         if (location != null) {
             double latitude = location.getLatitude();
             double longitude = location.getLongitude();
 
-            DataHelper.getInstance().saveLocation(LocationData.getInstance(latitude,longitude));
-
             tvLatitude.setText(String.valueOf(latitude));
             tvLongitude.setText(String.valueOf(longitude));
-            double deltaLatitude = Math.abs(startLocation.getLatitude() - latitude);
-            double deltaLongitude = Math.abs(startLocation.getLongitude() - longitude);
-            tvLatitudeDelta.setText(String.format("%.9f", deltaLatitude));
-            tvLongitudeDelta.setText(String.format("%.9f", deltaLongitude));
-
-            String time = Utils.formatTime(System.currentTimeMillis());
+            String time = Utils.formatTime(location.getTimestamp());
             tvLastUpdate.setText(time);
-            float distance = Utils.distFromCoordinates((float) startLocation.getLatitude(),
-                    (float) startLocation.getLongitude(),
-                    (float) latitude,
-                    (float) longitude);
-            String distanceText = String.format("%.2f m.", distance);
-            tvDistance.setText(distanceText);
+            Location startLocation = app.getStartLocation();
+            if (startLocation != null) {
+                double deltaLatitude = Math.abs(startLocation.getLatitude() - latitude);
+                double deltaLongitude = Math.abs(startLocation.getLongitude() - longitude);
+                tvLatitudeDelta.setText(String.format("%.9f", deltaLatitude));
+                tvLongitudeDelta.setText(String.format("%.9f", deltaLongitude));
+                float distance = Utils.distFromCoordinates((float) startLocation.getLatitude(),
+                        (float) startLocation.getLongitude(),
+                        (float) latitude,
+                        (float) longitude);
+                String distanceText = String.format("%.2f m.", distance);
+                tvDistance.setText(distanceText);
+            }
         }
     }
 
@@ -168,7 +177,7 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
                 googleApiClient.connect();
             } else {
                 Log.d(TAG, "Client is connected");
-                startLocationUpdates();
+                startTrackLocationService();
             }
         } else {
             Log.d(TAG, "Client is null");
