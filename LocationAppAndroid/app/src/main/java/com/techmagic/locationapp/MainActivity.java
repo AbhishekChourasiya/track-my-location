@@ -111,9 +111,11 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
     }
 
     private void startLocationUpdates() {
-        LocationRequest locationRequest = createLocationRequest();
-        LocationServices.FusedLocationApi.requestLocationUpdates(
-                googleApiClient, locationRequest, this);
+//        LocationRequest locationRequest = createLocationRequest();
+//        LocationServices.FusedLocationApi.requestLocationUpdates(
+//                googleApiClient, locationRequest, this);
+
+        startService(new Intent(this, TrackLocationService.class));
     }
 
     private void stopLocationUpdates() {
@@ -127,12 +129,10 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
             double longitude = location.getLongitude();
             tvLatitude.setText(String.valueOf(latitude));
             tvLongitude.setText(String.valueOf(longitude));
-            if (startLocation != null) {
-                double deltaLatitude = Math.abs(startLocation.getLatitude() - latitude);
-                double deltaLongitude = Math.abs(startLocation.getLongitude() - longitude);
-                tvLatitudeDelta.setText(String.format("%.9f", deltaLatitude));
-                tvLongitudeDelta.setText(String.format("%.9f", deltaLongitude));
-            }
+            double deltaLatitude = Math.abs(startLocation.getLatitude() - latitude);
+            double deltaLongitude = Math.abs(startLocation.getLongitude() - longitude);
+            tvLatitudeDelta.setText(String.format("%.9f", deltaLatitude));
+            tvLongitudeDelta.setText(String.format("%.9f", deltaLongitude));
 
             String time = new SimpleDateFormat("HH:mm:ss").format(new Date());
             tvLastUpdate.setText(time);
@@ -154,9 +154,10 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
     }
 
     private LocationRequest createLocationRequest() {
+        LocationRequestData data = LocationRequestData.FREQUENCY_MEDIUM;
         LocationRequest locationRequest = new LocationRequest();
-        locationRequest.setInterval(5000);
-        locationRequest.setFastestInterval(5000);
+        locationRequest.setInterval(data.getInterval());
+        locationRequest.setFastestInterval(data.getFastestInterval());
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         return locationRequest;
     }
@@ -176,6 +177,7 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
     }
 
     private void showErrorDialog(int errorCode) {
+        //TODO add errors handling
         // Create a fragment for the error dialog
         ErrorDialogFragment dialogFragment = new ErrorDialogFragment();
         // Pass the error that should be displayed
