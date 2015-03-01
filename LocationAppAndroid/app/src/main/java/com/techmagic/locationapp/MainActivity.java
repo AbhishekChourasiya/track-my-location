@@ -8,6 +8,8 @@ import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
@@ -18,6 +20,7 @@ import com.google.android.gms.location.LocationServices;
 import com.techmagic.locationapp.data.Data;
 import com.techmagic.locationapp.data.DataHelper;
 import com.techmagic.locationapp.data.model.LocationData;
+import com.techmagic.locationapp.map.MapResultsActivity;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -83,6 +86,25 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
             }
         }
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_map) {
+            Intent i = new Intent(this, MapResultsActivity.class);
+            startActivity(i);
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
 
     @Override
     public void onConnected(Bundle bundle) {

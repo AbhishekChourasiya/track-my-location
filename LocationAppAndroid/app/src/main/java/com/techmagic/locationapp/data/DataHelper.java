@@ -36,9 +36,18 @@ public class DataHelper {
     }
 
     public LocationData getLastLocation() {
-        List<LocationData> data = new Select().from(LocationData.class).orderBy(Data.LocationData.COLUMN_TIMESTAMP + " DESC").limit(String.valueOf(1)).execute();
+        List<LocationData> data = new Select().from(LocationData.class)
+                .orderBy(Data.LocationData.COLUMN_TIMESTAMP + " DESC")
+                .limit(String.valueOf(1)).execute();
         LocationData locationData = data != null && data.size() > 0 ? data.get(0) : null;
         return locationData;
+    }
+
+    public List<LocationData> getLastLocations(int count) {
+        List<LocationData> data = new Select().from(LocationData.class)
+                .orderBy(Data.LocationData.COLUMN_TIMESTAMP + " DESC")
+                .limit(String.valueOf(count)).execute();
+        return data;
     }
 
     public void deleteAllLocations() {
