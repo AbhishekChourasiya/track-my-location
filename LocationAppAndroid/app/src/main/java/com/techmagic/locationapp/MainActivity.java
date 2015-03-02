@@ -46,12 +46,7 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
         }
     };
 
-    @InjectView(R.id.tv_latitude) TextView tvLatitude;
-    @InjectView(R.id.tv_longitude) TextView tvLongitude;
-    @InjectView(R.id.tv_latitude_delta) TextView tvLatitudeDelta;
-    @InjectView(R.id.tv_longitude_delta) TextView tvLongitudeDelta;
     @InjectView(R.id.tv_last_update) TextView tvLastUpdate;
-    @InjectView(R.id.tv_distance) TextView tvDistance;
     @InjectView(R.id.radio_group) RadioGroup radioGroup;
 
     @Override
@@ -136,6 +131,11 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
         connectGoogleApiClient();
     }
 
+    @OnClick(R.id.btn_clear_data)
+    public void clearData() {
+        DataHelper.getInstance(getApplicationContext()).deleteAllLocations();
+    }
+
     @OnClick(R.id.btn_stop_tracking)
     public void stopTracking() {
         stopService(new Intent(this, TrackLocationService.class));
@@ -157,26 +157,8 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
         DataHelper dataHelper = DataHelper.getInstance(this);
         LocationData location = dataHelper.getLastLocation();
         if (location != null) {
-            double latitude = location.getLatitude();
-            double longitude = location.getLongitude();
-
-            tvLatitude.setText(String.valueOf(latitude));
-            tvLongitude.setText(String.valueOf(longitude));
             String time = Utils.formatTime(location.getTimestamp());
             tvLastUpdate.setText(time);
-            Location startLocation = app.getStartLocation();
-            if (startLocation != null) {
-                double deltaLatitude = Math.abs(startLocation.getLatitude() - latitude);
-                double deltaLongitude = Math.abs(startLocation.getLongitude() - longitude);
-                tvLatitudeDelta.setText(String.format("%.9f", deltaLatitude));
-                tvLongitudeDelta.setText(String.format("%.9f", deltaLongitude));
-                float distance = Utils.distFromCoordinates((float) startLocation.getLatitude(),
-                        (float) startLocation.getLongitude(),
-                        (float) latitude,
-                        (float) longitude);
-                String distanceText = String.format("%.2f m.", distance);
-                tvDistance.setText(distanceText);
-            }
         }
     }
 

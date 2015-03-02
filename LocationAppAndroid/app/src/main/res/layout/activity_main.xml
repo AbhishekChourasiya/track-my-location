@@ -36,9 +36,18 @@
     </RadioGroup>
 
     <Button
+        android:id="@+id/btn_clear_data"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="4dp"
+        style="@style/TextAppearance.AppCompat.Title"
+        android:text="Clear data"/>
+
+    <Button
         android:id="@+id/btn_start_tracking"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_margin="4dp"
         style="@style/TextAppearance.AppCompat.Title"
         android:text="Start tracking"/>
 
@@ -46,6 +55,7 @@
         android:id="@+id/btn_stop_tracking"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_margin="4dp"
         style="@style/TextAppearance.AppCompat.Title"
         android:text="Stop tracking"/>
 
@@ -55,121 +65,5 @@
         android:layout_height="wrap_content"
         android:layout_margin="4dp"
         android:text="Last update time"/>
-
-    <TextView
-        android:id="@+id/tv_distance"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="4dp"/>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="4dp"
-        android:orientation="vertical">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="4dp"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                style="@style/TextAppearance.AppCompat.Title"
-                android:text="Latitude:" />
-
-            <TextView
-                android:id="@+id/tv_latitude"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                style="@style/TextAppearance.AppCompat.Title"
-                android:text="0.0"
-                android:layout_weight="1" />
-
-        </LinearLayout>
-
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="4dp"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Delta:"
-                style="@style/TextAppearance.AppCompat.Title"
-                android:layout_weight="1" />
-
-            <TextView
-                android:id="@+id/tv_latitude_delta"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="0.0"
-                style="@style/TextAppearance.AppCompat.Title"
-                android:layout_weight="1" />
-
-        </LinearLayout>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="4dp"
-        android:orientation="vertical">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="4dp"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                style="@style/TextAppearance.AppCompat.Title"
-                android:text="Longitude:" />
-
-            <TextView
-                android:id="@+id/tv_longitude"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                style="@style/TextAppearance.AppCompat.Title"
-                android:text="0.0"
-                android:layout_weight="1" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="4dp"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Delta:"
-                style="@style/TextAppearance.AppCompat.Title"
-                android:layout_weight="1" />
-
-            <TextView
-                android:id="@+id/tv_longitude_delta"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="0.0"
-                style="@style/TextAppearance.AppCompat.Title"
-                android:layout_weight="1" />
-
-        </LinearLayout>
-
-    </LinearLayout>
-
 
 </LinearLayout>

@@ -1,11 +1,14 @@
 package com.techmagic.locationapp;
 
+import android.app.Application;
 import android.location.Location;
 
 import com.activeandroid.ActiveAndroid;
+import com.activeandroid.Configuration;
 import com.google.android.gms.location.LocationRequest;
+import com.techmagic.locationapp.data.model.LocationData;
 
-public class LocationApplication extends com.activeandroid.app.Application {
+public class LocationApplication extends Application {
 
     private LocationRequestData locationRequestData;
     private Location startLocation;
@@ -13,9 +16,8 @@ public class LocationApplication extends com.activeandroid.app.Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        ActiveAndroid.initialize(this);
-
         setLocationRequestData(LocationRequestData.FREQUENCY_MEDIUM);
+        initializeDB();
     }
 
     public void setLocationRequestData(LocationRequestData requestData) {
@@ -41,4 +43,11 @@ public class LocationApplication extends com.activeandroid.app.Application {
         locationRequest.setPriority(locationRequestData.getPriority());
         return locationRequest;
     }
+
+    protected void initializeDB() {
+        Configuration.Builder configurationBuilder = new Configuration.Builder(this);
+        configurationBuilder.addModelClasses(LocationData.class);
+        ActiveAndroid.initialize(configurationBuilder.create());
+    }
+
 }

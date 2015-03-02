@@ -4,7 +4,7 @@ import com.google.android.gms.location.LocationRequest;
 
 public enum LocationRequestData {
     FREQUENCY_HIGH(5000, 5000, LocationRequest.PRIORITY_HIGH_ACCURACY),
-    FREQUENCY_MEDIUM(15 * 60 * 1000, 5 * 60 * 1000, LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY),
+    FREQUENCY_MEDIUM(5 * 60 * 1000, 5 * 60 * 1000, LocationRequest.PRIORITY_HIGH_ACCURACY),
     FREQUENCY_LOW(60 * 60 * 1000, 25 * 60 * 1000, LocationRequest.PRIORITY_LOW_POWER);
 
     LocationRequestData(int interval, int fastestInterval, int priority) {

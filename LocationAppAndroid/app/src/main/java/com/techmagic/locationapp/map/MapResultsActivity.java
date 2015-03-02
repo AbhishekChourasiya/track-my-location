@@ -21,6 +21,7 @@ import butterknife.ButterKnife;
 
 public class MapResultsActivity extends ActionBarActivity {
 
+    private static final int COUNT_LOCATIONS = 20;
     private MapFragment mapFragment;
 
     @Override
@@ -38,7 +39,7 @@ public class MapResultsActivity extends ActionBarActivity {
     }
 
     private void showData() {
-        List<LocationData> locations = DataHelper.getInstance(getApplicationContext()).getLastLocations(10);
+        List<LocationData> locations = DataHelper.getInstance(getApplicationContext()).getLastLocations(COUNT_LOCATIONS);
         if (locations == null || !(locations.size() > 0)) {
             return;
         }

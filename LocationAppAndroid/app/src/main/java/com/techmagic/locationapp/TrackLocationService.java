@@ -127,17 +127,18 @@ public class TrackLocationService extends Service implements GoogleApiClient.Con
                 (float) longitude);
 
         String distanceText = String.format("%.2f m.", distance);
+        String timeText = Utils.formatTime(System.currentTimeMillis());
 
         DataHelper.getInstance(this).saveLocation(LocationData.getInstance(latitude, longitude));
-        updateNotification(distanceText);
+        updateNotification(timeText);
     }
 
-    private void updateNotification(String distanceText) {
+    private void updateNotification(String text) {
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
                         .setSmallIcon(R.drawable.ic_launcher)
-                        .setContentTitle("Location Application")
-                        .setContentText(distanceText);
+                        .setContentTitle(getString(R.string.app_name))
+                        .setContentText(text);
 
         NotificationManager mNotificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);

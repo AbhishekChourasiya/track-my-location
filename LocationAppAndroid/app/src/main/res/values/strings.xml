@@ -1,10 +1,11 @@
 <resources>
-    <string name="app_name">LocationApp</string>
+    <string name="app_name">Track My Location</string>
 
     <string name="rb_high">High</string>
     <string name="rb_medium">Medium</string>
     <string name="rb_low">Low</string>
-    <string name="title_activity_results">ResultsActivity</string>
+    <string name="title_activity_main">Location Tracking</string>
+    <string name="title_activity_results">Tracking Results</string>
 
     <string name="action_map">Map</string>
 </resources>
