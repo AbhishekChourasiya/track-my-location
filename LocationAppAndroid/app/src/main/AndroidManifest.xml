@@ -47,6 +47,9 @@
         <meta-data
             android:name="AA_DB_VERSION"
             android:value="1" />
+        <meta-data
+            android:name="com.crashlytics.ApiKey"
+            android:value="99e17ce5825d67896ac723bf9fab7a2556293701" />
     </application>
 
 </manifest>

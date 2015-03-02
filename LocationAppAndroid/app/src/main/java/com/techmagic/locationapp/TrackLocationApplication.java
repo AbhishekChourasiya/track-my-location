@@ -5,8 +5,10 @@ import android.location.Location;
 
 import com.activeandroid.ActiveAndroid;
 import com.activeandroid.Configuration;
+import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.location.LocationRequest;
 import com.techmagic.locationapp.data.model.LocationData;
+import io.fabric.sdk.android.Fabric;
 
 public class TrackLocationApplication extends Application {
 
@@ -16,6 +18,7 @@ public class TrackLocationApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        Fabric.with(this, new Crashlytics());
         setLocationRequestData(LocationRequestData.FREQUENCY_MEDIUM);
         initializeDB();
     }
