@@ -8,7 +8,7 @@ import com.activeandroid.Configuration;
 import com.google.android.gms.location.LocationRequest;
 import com.techmagic.locationapp.data.model.LocationData;
 
-public class LocationApplication extends Application {
+public class TrackLocationApplication extends Application {
 
     private LocationRequestData locationRequestData;
     private Location startLocation;
@@ -41,6 +41,7 @@ public class LocationApplication extends Application {
         locationRequest.setInterval(locationRequestData.getInterval());
         locationRequest.setFastestInterval(locationRequestData.getFastestInterval());
         locationRequest.setPriority(locationRequestData.getPriority());
+        locationRequest.setSmallestDisplacement(locationRequestData.getSmallestDisplacement());
         return locationRequest;
     }
 

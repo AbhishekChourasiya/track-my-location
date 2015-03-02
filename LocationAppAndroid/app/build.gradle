@@ -44,4 +44,5 @@ dependencies {
     compile 'com.google.android.gms:play-services-base:6.5.87'
     compile 'com.google.android.gms:play-services-location:6.5.87'
     compile 'com.michaelpardo:activeandroid:3.1.0-SNAPSHOT'
+    compile 'de.greenrobot:eventbus:2.4.0'
 }

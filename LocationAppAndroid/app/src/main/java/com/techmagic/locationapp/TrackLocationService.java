@@ -18,15 +18,28 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.techmagic.locationapp.data.DataHelper;
 import com.techmagic.locationapp.data.model.LocationData;
+import com.techmagic.locationapp.event.AppEvent;
+
+import de.greenrobot.event.EventBus;
 
 public class TrackLocationService extends Service implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
+    private static boolean isServiceRunning;
     private static final String TAG = TrackLocationService.class.getCanonicalName();
     private int notificationId = 9999;
     private GoogleApiClient googleApiClient;
 
-    private LocationApplication app;
+    private TrackLocationApplication app;
+
+    public static boolean isServiceRunning() {
+        return isServiceRunning;
+    }
+
+    private static void setIsServiceRunning(boolean isServiceRunning) {
+        TrackLocationService.isServiceRunning = isServiceRunning;
+        EventBus.getDefault().post(AppEvent.SERVICE_STATE_CHANGED);
+    }
 
     public TrackLocationService() {
     }
@@ -35,14 +48,15 @@ public class TrackLocationService extends Service implements GoogleApiClient.Con
     public void onCreate() {
         super.onCreate();
 
-        app = (LocationApplication) getApplication();
+        app = (TrackLocationApplication) getApplication();
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-
         createGoogleApiClient();
         connectGoogleApiClient();
+
+        TrackLocationService.setIsServiceRunning(true);
 
         return super.onStartCommand(intent, flags, startId);
     }
@@ -53,6 +67,8 @@ public class TrackLocationService extends Service implements GoogleApiClient.Con
         stopLocationUpdates();
         cancelNotification();
         app.setStartLocation(null);
+
+        TrackLocationService.setIsServiceRunning(false);
     }
 
     @Override

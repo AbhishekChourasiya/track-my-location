@@ -1,11 +1,14 @@
 <resources>
     <string name="app_name">Track My Location</string>
 
-    <string name="rb_high">High</string>
-    <string name="rb_medium">Medium</string>
-    <string name="rb_low">Low</string>
+    <string name="rb_high">5 seconds, 1 meter displacement</string>
+    <string name="rb_medium">5 minutes, 100 meters displacement</string>
+    <string name="rb_low">1 hour, 500 meters displacement</string>
     <string name="title_activity_main">Location Tracking</string>
     <string name="title_activity_results">Tracking Results</string>
 
     <string name="action_map">Map</string>
+    <string name="btn_start_tracking">Start tracking</string>
+    <string name="btn_stop_tracking">Stop tracking</string>
+
 </resources>

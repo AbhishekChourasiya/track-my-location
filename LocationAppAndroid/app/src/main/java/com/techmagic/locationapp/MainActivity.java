@@ -4,13 +4,13 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.database.ContentObserver;
-import android.location.Location;
 import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
@@ -22,11 +22,13 @@ import com.google.android.gms.location.LocationServices;
 import com.techmagic.locationapp.data.Data;
 import com.techmagic.locationapp.data.DataHelper;
 import com.techmagic.locationapp.data.model.LocationData;
+import com.techmagic.locationapp.event.AppEvent;
 import com.techmagic.locationapp.map.MapResultsActivity;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import de.greenrobot.event.EventBus;
 
 
 public class MainActivity extends ActionBarActivity implements GoogleApiClient.ConnectionCallbacks,
@@ -35,19 +37,20 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
     private static final String TAG = MainActivity.class.getCanonicalName();
     private static final int REQUEST_RESOLVE_ERROR = 9999;
     private GoogleApiClient googleApiClient ;
-    private LocationApplication app;
+    private TrackLocationApplication app;
     private Handler handler = new Handler();
 
     private ContentObserver contentObserver = new ContentObserver(handler) {
         @Override
         public void onChange(boolean selfChange) {
             super.onChange(selfChange);
-            updateLocationData();
+            refreshUI();
         }
     };
 
     @InjectView(R.id.tv_last_update) TextView tvLastUpdate;
     @InjectView(R.id.radio_group) RadioGroup radioGroup;
+    @InjectView(R.id.btn_toggle_tracking) Button btnToggleTracking;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +58,7 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
         setContentView(R.layout.activity_main);
         ButterKnife.inject(this);
 
-        app = (LocationApplication) getApplication();
+        app = (TrackLocationApplication) getApplication();
 
         setupRadioGroup();
     }
@@ -63,13 +66,15 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
     @Override
     protected void onResume() {
         super.onResume();
+        EventBus.getDefault().register(this);
         registerContentObservers();
-        updateLocationData();
+        refreshUI();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+        EventBus.getDefault().unregister(this);
         unRegisterContentObservers();
     }
 
@@ -126,9 +131,22 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
         }
     }
 
-    @OnClick(R.id.btn_start_tracking)
-    public void startTracking() {
-        connectGoogleApiClient();
+    public void onEvent(AppEvent event) {
+        switch (event) {
+            case SERVICE_STATE_CHANGED:
+                refreshUI();
+                break;
+        }
+
+    }
+
+    @OnClick(R.id.btn_toggle_tracking)
+    public void toggleTracking() {
+        if (TrackLocationService.isServiceRunning()) {
+            stopTracking();
+        } else {
+            startTracking();
+        }
     }
 
     @OnClick(R.id.btn_clear_data)
@@ -136,9 +154,12 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
         DataHelper.getInstance(getApplicationContext()).deleteAllLocations();
     }
 
-    @OnClick(R.id.btn_stop_tracking)
-    public void stopTracking() {
+    private void stopTracking() {
         stopService(new Intent(this, TrackLocationService.class));
+    }
+
+    private void startTracking() {
+        connectGoogleApiClient();
     }
 
     private void startTrackLocationService() {
@@ -153,12 +174,18 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
         getContentResolver().unregisterContentObserver(contentObserver);
     }
 
-    private void updateLocationData() {
+    private void refreshUI() {
         DataHelper dataHelper = DataHelper.getInstance(this);
         LocationData location = dataHelper.getLastLocation();
         if (location != null) {
             String time = Utils.formatTime(location.getTimestamp());
             tvLastUpdate.setText(time);
+        }
+
+        if (TrackLocationService.isServiceRunning()) {
+            btnToggleTracking.setText(R.string.btn_stop_tracking);
+        } else {
+            btnToggleTracking.setText(R.string.btn_start_tracking);
         }
     }
 

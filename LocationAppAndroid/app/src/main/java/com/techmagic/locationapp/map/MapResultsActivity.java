@@ -4,6 +4,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.activeandroid.Model;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -21,7 +22,8 @@ import butterknife.ButterKnife;
 
 public class MapResultsActivity extends ActionBarActivity {
 
-    private static final int COUNT_LOCATIONS = 20;
+    private static final int COUNT_LOCATIONS = 1000;
+    private static final int ZOOM_LEVEL = 15;
     private MapFragment mapFragment;
 
     @Override
@@ -41,11 +43,12 @@ public class MapResultsActivity extends ActionBarActivity {
     private void showData() {
         List<LocationData> locations = DataHelper.getInstance(getApplicationContext()).getLastLocations(COUNT_LOCATIONS);
         if (locations == null || !(locations.size() > 0)) {
+            Toast.makeText(this, "No locations to display", Toast.LENGTH_SHORT).show();
             return;
         }
         LocationData locationToZoom = locations.get(0);
         mapFragment.getMap().moveCamera(CameraUpdateFactory
-                .newLatLngZoom(new LatLng(locationToZoom.getLatitude(), locationToZoom.getLongitude()), 10));
+                .newLatLngZoom(new LatLng(locationToZoom.getLatitude(), locationToZoom.getLongitude()), ZOOM_LEVEL));
         for (LocationData d : locations) {
             MarkerOptions mo = new MarkerOptions();
             mo.position(new LatLng(d.getLatitude(), d.getLongitude()));
