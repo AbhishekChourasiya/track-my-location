@@ -43,10 +43,11 @@ public class DataHelper {
         return locationData;
     }
 
-    public List<LocationData> getLastLocations(int count) {
+    public List<LocationData> getLastLocations(int lastMilliSeconds) {
         List<LocationData> data = new Select().from(LocationData.class)
                 .orderBy(Data.LocationData.COLUMN_TIMESTAMP + " DESC")
-                .limit(String.valueOf(count)).execute();
+                .where(Data.LocationData.COLUMN_TIMESTAMP + " > " + (System.currentTimeMillis() - lastMilliSeconds))
+                .execute();
         return data;
     }
 

@@ -23,6 +23,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".map.MapResultsActivity"
+            android:label="@string/title_activity_results"
+            android:configChanges="keyboardHidden|orientation|screenSize">
+        </activity>
 
         <service
             android:name=".TrackLocationService"
@@ -42,11 +47,6 @@
         <meta-data
             android:name="AA_DB_VERSION"
             android:value="1" />
-
-        <activity
-            android:name=".map.MapResultsActivity"
-            android:label="@string/title_activity_results" >
-        </activity>
     </application>
 
 </manifest>

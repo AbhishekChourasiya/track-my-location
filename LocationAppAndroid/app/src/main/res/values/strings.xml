@@ -8,7 +8,12 @@
     <string name="title_activity_results">Tracking Results</string>
 
     <string name="action_map">Map</string>
+    <string name="action_filter">Filter</string>
     <string name="btn_start_tracking">Start tracking</string>
     <string name="btn_stop_tracking">Stop tracking</string>
+
+    <string name="one_week">1 week</string>
+    <string name="one_day">24 hours</string>
+    <string name="one_hour">1 hour</string>
 
 </resources>
