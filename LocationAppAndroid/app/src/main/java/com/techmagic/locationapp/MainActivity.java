@@ -1,5 +1,6 @@
 package com.techmagic.locationapp;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.database.ContentObserver;
@@ -15,6 +16,7 @@ import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.ErrorDialogFragment;
+import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 import com.techmagic.locationapp.data.Data;
@@ -34,7 +36,6 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
     private static final int REQUEST_RESOLVE_ERROR = 9999;
     private GoogleApiClient googleApiClient ;
     private LocationApplication app;
-    private boolean resolvingError;
     private Handler handler = new Handler();
 
     private ContentObserver contentObserver = new ContentObserver(handler) {
@@ -80,7 +81,6 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_RESOLVE_ERROR) {
-            resolvingError = false;
             if (resultCode == RESULT_OK) {
                 connectGoogleApiClient();
             }
@@ -120,26 +120,19 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
     @Override
     public void onConnectionFailed(ConnectionResult result) {
         Log.d(TAG, "onConnectionFailed");
-        if (resolvingError) {
-            return;
-        } else if (result.hasResolution()) {
+        if (result.hasResolution()) {
             try {
-                resolvingError = true;
                 result.startResolutionForResult(this, REQUEST_RESOLVE_ERROR);
             } catch (IntentSender.SendIntentException e) {
                 googleApiClient.connect();
             }
         } else {
             showErrorDialog(result.getErrorCode());
-            resolvingError = true;
         }
     }
 
     @OnClick(R.id.btn_start_tracking)
     public void startTracking() {
-        if (googleApiClient == null) {
-            createGoogleApiClient();
-        }
         connectGoogleApiClient();
     }
 
@@ -221,25 +214,38 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
         });
     }
 
-    private void createGoogleApiClient() {
-        googleApiClient = new GoogleApiClient.Builder(this)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(LocationServices.API)
-                .build();
+    private int createGoogleApiClient() {
+        int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
+        switch (status) {
+            case ConnectionResult.SUCCESS:
+                googleApiClient = new GoogleApiClient.Builder(this)
+                        .addConnectionCallbacks(this)
+                        .addOnConnectionFailedListener(this)
+                        .addApi(LocationServices.API)
+                        .build();
+                break;
+            case ConnectionResult.SERVICE_MISSING:
+            case ConnectionResult.SERVICE_VERSION_UPDATE_REQUIRED:
+            case ConnectionResult.SERVICE_DISABLED:
+                Dialog dialog = GooglePlayServicesUtil.getErrorDialog(status, this, REQUEST_RESOLVE_ERROR);
+                dialog.show();
+                break;
+        }
+        return status;
     }
 
     private void connectGoogleApiClient() {
-        if (googleApiClient != null) {
-            if (!(googleApiClient.isConnected() || googleApiClient.isConnecting())
-                    && !resolvingError) {
-                googleApiClient.connect();
-            } else {
-                Log.d(TAG, "Client is connected");
-                startTrackLocationService();
+        if (googleApiClient == null) {
+            if (createGoogleApiClient() != ConnectionResult.SUCCESS) {
+                return;
             }
+        }
+
+        if (!(googleApiClient.isConnected() || googleApiClient.isConnecting())) {
+            googleApiClient.connect();
         } else {
-            Log.d(TAG, "Client is null");
+            Log.d(TAG, "Client is connected");
+            startTrackLocationService();
         }
     }
 
