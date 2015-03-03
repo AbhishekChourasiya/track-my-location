@@ -1,0 +1,23 @@
+{
+    "name": "clubbook",
+    "version": "0.0.2",
+    "private": true,
+    "scripts": {
+        "start": "node server.js"
+    },
+    "dependencies": {
+		"coffee-script": "~1.6.3",
+		"underscore": "1.5.2",
+		"express": "3.4.4",
+		"jade": "0.35.0",
+		"mongoose": "3.6.20",
+		"yaml-config": "0.3.0",
+		"moment": "2.4.0",
+		"node-gcm": "0.9.8",
+		"google-oauth-jwt": "0.1.2"
+    },
+    "engines": {
+        "node": "0.10.x",
+        "npm": "1.x.x"
+    }
+}

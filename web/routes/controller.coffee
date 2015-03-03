@@ -1,0 +1,53 @@
+mongoose = require('mongoose')
+moment = require('moment')
+db_model = require("../logic/model")
+__ = require("underscore")
+mongoose.connect(config.db.connection)
+
+exports.user_push_track = (req, res)->
+	db_model.User.findOne({device_id: req.body.device_id}).exec (err, user)->
+		if user
+			console.log moment(user.track[0].time).millisecond()
+			console.log new Date(req.body.time)
+			console.log 111
+			is_repeat = __.find(user.track, (c_res)->
+				c_res.time == req.body.time
+			)
+			if is_repeat
+				res.json 
+					status: "fail"
+			else
+				user.track.push {lon: req.body.lon, lat: req.body.lat, time: req.body.time}
+				user.save (err) ->
+					console.log err  
+					res.json
+						status: 200
+		else
+			user = new db_model.User
+				device_id: req.body.device_id
+			user.track.push {lon: req.body.lon, lat: req.body.lat, time: req.body.time}
+			user.save (err) ->
+				console.log err  
+				res.json
+					status: 200
+
+exports.devices = (req, res)->
+	db_model.User.find().exec (err, dev)->
+		model = {}
+		model.devices = dev
+		res.render "devices", model
+
+exports.device_id = (req, res)->
+	console.log req.params.objectId
+	db_model.User.findOne({device_id: req.params.objectId}).exec (err, dev)->
+		device = dev.toObject()
+		for d in device.track
+			d.time = moment(d.time).format('LLLL')
+		model = {}
+		model.device = device
+		res.render "device_details", model
+		
+exports.get_coordinates = (req, res)->
+	db_model.User.findOne({device_id: req.params.objectId}).exec (err, dev)->
+		res.json 
+			dev:dev.track
