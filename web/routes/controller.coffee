@@ -7,17 +7,14 @@ mongoose.connect(config.db.connection)
 exports.user_push_track = (req, res)->
 	db_model.User.findOne({device_id: req.body.device_id}).exec (err, user)->
 		if user
-			console.log moment(user.track[0].time).millisecond()
-			console.log new Date(req.body.time)
-			console.log 111
 			is_repeat = __.find(user.track, (c_res)->
-				c_res.time == req.body.time
+				c_res.time_seconds == parseInt(req.body.time)
 			)
 			if is_repeat
 				res.json 
-					status: "fail"
+					status: "Error. Already exist"
 			else
-				user.track.push {lon: req.body.lon, lat: req.body.lat, time: req.body.time}
+				user.track.push {lon: req.body.lon, lat: req.body.lat, time: req.body.time, time_seconds: req.body.time}
 				user.save (err) ->
 					console.log err  
 					res.json
@@ -25,7 +22,7 @@ exports.user_push_track = (req, res)->
 		else
 			user = new db_model.User
 				device_id: req.body.device_id
-			user.track.push {lon: req.body.lon, lat: req.body.lat, time: req.body.time}
+			user.track.push {lon: req.body.lon, lat: req.body.lat, time: req.body.time, time_seconds: req.body.time}
 			user.save (err) ->
 				console.log err  
 				res.json
