@@ -47,12 +47,14 @@ public class TrackLocationService extends Service implements GoogleApiClient.Con
     @Override
     public void onCreate() {
         super.onCreate();
+        Log.d(TAG, "onCreate");
 
         app = (TrackLocationApplication) getApplication();
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        Log.d(TAG, "onStartCommand");
         createGoogleApiClient();
         connectGoogleApiClient();
 
@@ -64,6 +66,7 @@ public class TrackLocationService extends Service implements GoogleApiClient.Con
     @Override
     public void onDestroy() {
         super.onDestroy();
+        Log.d(TAG, "onDestroy");
         stopLocationUpdates();
         cancelNotification();
         app.setStartLocation(null);
@@ -99,6 +102,12 @@ public class TrackLocationService extends Service implements GoogleApiClient.Con
     @Override
     public void onConnectionFailed(ConnectionResult result) {
         Log.d(TAG, "onConnectionFailed");
+    }
+
+    @Override
+    public void onTaskRemoved(Intent rootIntent) {
+        super.onTaskRemoved(rootIntent);
+        Log.d(TAG, "onTaskRemoved");
     }
 
     private void createGoogleApiClient() {

@@ -1,7 +1,10 @@
 package com.techmagic.locationapp;
 
 import android.app.Application;
+import android.content.SharedPreferences;
 import android.location.Location;
+import android.preference.PreferenceManager;
+import android.text.TextUtils;
 
 import com.activeandroid.ActiveAndroid;
 import com.activeandroid.Configuration;
@@ -12,6 +15,7 @@ import io.fabric.sdk.android.Fabric;
 
 public class TrackLocationApplication extends Application {
 
+    private static final String KEY_REQUEST_DATA_NAME = "KEY_REQUEST_DATA_NAME";
     private LocationRequestData locationRequestData;
     private Location startLocation;
 
@@ -19,12 +23,28 @@ public class TrackLocationApplication extends Application {
     public void onCreate() {
         super.onCreate();
         Fabric.with(this, new Crashlytics());
-        setLocationRequestData(LocationRequestData.FREQUENCY_MEDIUM);
+        if (!retrieveLocationRequestData()) {
+            setLocationRequestData(LocationRequestData.FREQUENCY_MEDIUM);
+        }
         initializeDB();
+    }
+
+    private boolean retrieveLocationRequestData() {
+        String name = PreferenceManager.getDefaultSharedPreferences(this).getString(KEY_REQUEST_DATA_NAME, null);
+        if (!TextUtils.isEmpty(name)) {
+            LocationRequestData data = LocationRequestData.valueOf(name);
+            if (data != null) {
+                locationRequestData = data;
+                return true;
+            }
+        }
+        return false;
     }
 
     public void setLocationRequestData(LocationRequestData requestData) {
         locationRequestData = requestData;
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        preferences.edit().putString(KEY_REQUEST_DATA_NAME, requestData.name()).apply();
     }
 
     public LocationRequestData getLocationRequestData() {
