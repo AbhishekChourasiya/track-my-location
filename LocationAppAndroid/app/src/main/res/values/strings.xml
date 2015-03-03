@@ -3,6 +3,8 @@
 
     <string name="rb_high">5 seconds, 1 meter displacement</string>
     <string name="rb_medium">5 minutes, 100 meters displacement</string>
+    <string name="rb_medium_one">15 minutes, 100 meters displacement</string>
+    <string name="rb_medium_two">30 minutes, 100 meters displacement</string>
     <string name="rb_low">1 hour, 500 meters displacement</string>
     <string name="title_activity_main">Location Tracking</string>
     <string name="title_activity_results">Tracking Results</string>

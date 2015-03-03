@@ -198,6 +198,12 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
             case FREQUENCY_MEDIUM:
                 radioGroup.check(R.id.radio_medium);
                 break;
+            case FREQUENCY_MEDIUM_ONE:
+                radioGroup.check(R.id.radio_medium_one);
+                break;
+            case FREQUENCY_MEDIUM_TWO:
+                radioGroup.check(R.id.radio_medium_two);
+                break;
             case FREQUENCY_LOW:
                 radioGroup.check(R.id.radio_low_);
                 break;
@@ -212,6 +218,12 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
                         break;
                     case R.id.radio_medium:
                         app.setLocationRequestData(LocationRequestData.FREQUENCY_MEDIUM);
+                        break;
+                    case R.id.radio_medium_one:
+                        app.setLocationRequestData(LocationRequestData.FREQUENCY_MEDIUM_ONE);
+                        break;
+                    case R.id.radio_medium_two:
+                        app.setLocationRequestData(LocationRequestData.FREQUENCY_MEDIUM_TWO);
                         break;
                     case R.id.radio_low_:
                         app.setLocationRequestData(LocationRequestData.FREQUENCY_LOW);

@@ -30,6 +30,18 @@
             android:layout_margin="4dp"
             android:text="@string/rb_medium"/>
 
+        <RadioButton android:id="@+id/radio_medium_one"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:text="@string/rb_medium_one"/>
+
+        <RadioButton android:id="@+id/radio_medium_two"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:text="@string/rb_medium_two"/>
+
         <RadioButton android:id="@+id/radio_low_"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
