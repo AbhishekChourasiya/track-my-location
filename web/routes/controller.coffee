@@ -5,7 +5,7 @@ __ = require("underscore")
 mongoose.connect(config.db.connection)
 
 exports.user_push_track = (req, res)->
-	if Math.abs(req.body.lat)<90 && Math.abs(req.body.lon)<180
+	if Math.abs(req.body.lat)<90 && Math.abs(req.body.lon)<180 && parseInt(req.body.time)>0
 		db_model.User.findOne({device_id: req.body.device_id}).exec (err, user)->
 			if user
 				is_repeat = __.find(user.track, (c_res)->
@@ -30,7 +30,7 @@ exports.user_push_track = (req, res)->
 						status: 200
 	else 
 		res.json 
-			status: "Error. Incorrect latitude or longitude."
+			status: "Error. Incorrect data."
 
 exports.devices = (req, res)->
 	db_model.User.find().exec (err, dev)->
