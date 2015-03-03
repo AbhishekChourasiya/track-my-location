@@ -8,14 +8,8 @@ div#map-canvas
 br
 div
 	for dev in device.track
-		div.lon longitude = #{dev.lon}
-		div.lat latitude = #{dev.lat}
-		div date = #{dev.time}
+		div #{dev.time}(longitude = #{dev.lon}; latitude = #{dev.lat})
 		br
-
-
-
-
 
 
 
