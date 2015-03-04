@@ -31,7 +31,8 @@ public class TrackLocationClient implements ITrackLocationClient {
 
     public TrackLocationResponse addTrack(TrackLocationRequest request) {
         TrackLocationResponse response = trackApi.addTrack(request);
-        Log.d(TAG, "response status : " + response != null ? response.getStatus() : "error");
+        Log.d(TAG, "response status : " + response != null ?
+                String.valueOf(response.getStatus()) : String.valueOf(0));
         return response;
     }
 

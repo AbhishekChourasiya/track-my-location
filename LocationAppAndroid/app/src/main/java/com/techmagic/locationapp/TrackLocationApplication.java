@@ -11,6 +11,8 @@ import com.activeandroid.Configuration;
 import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.location.LocationRequest;
 import com.techmagic.locationapp.data.model.LocationData;
+import com.techmagic.locationapp.webclient.model.TrackLocationRequest;
+
 import io.fabric.sdk.android.Fabric;
 
 public class TrackLocationApplication extends Application {
@@ -23,6 +25,7 @@ public class TrackLocationApplication extends Application {
     public void onCreate() {
         super.onCreate();
         Fabric.with(this, new Crashlytics());
+        TrackLocationRequest.deviceId = Utils.getUniqueDeviceId(getApplicationContext());
         if (!retrieveLocationRequestData()) {
             setLocationRequestData(LocationRequestData.FREQUENCY_MEDIUM);
         }
