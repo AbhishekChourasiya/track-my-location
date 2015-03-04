@@ -22,5 +22,14 @@ public class Utils {
         return time;
     }
 
+    public static String formatTimeWithoutSeconds(long milis) {
+        String time = new SimpleDateFormat("HH:mm").format(new Date(milis));
+        return time;
+    }
+
+    public static String formatDate(long milis) {
+        String time = new SimpleDateFormat("MM-yyyy-dd").format(new Date(milis));
+        return time;
+    }
 
 }

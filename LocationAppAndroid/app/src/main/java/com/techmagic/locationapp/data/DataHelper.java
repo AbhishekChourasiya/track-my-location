@@ -51,6 +51,15 @@ public class DataHelper {
         return data;
     }
 
+    public List<LocationData> getLastLocations(long from, long to) {
+        List<LocationData> data = new Select().from(LocationData.class)
+                .orderBy(Data.LocationData.COLUMN_TIMESTAMP + " DESC")
+                .where(Data.LocationData.COLUMN_TIMESTAMP + " > " + from)
+                .and(Data.LocationData.COLUMN_TIMESTAMP + " < " + to)
+                .execute();
+        return data;
+    }
+
     public void deleteAllLocations() {
         new Delete().from(LocationData.class).execute();
     }
