@@ -2,7 +2,7 @@ express = require('express');
 http = require('http');
 path = require('path');
 fs = require('fs')
-
+bodyParser = require('body-parser')
 app = express();
 
 global.config = require('yaml-config').readConfig('./config/config.yaml', app.settings.env)
@@ -12,6 +12,8 @@ db_model = require("./logic/model")
 # controllers
 controller = require('./routes/controller')
 app.use(express.bodyParser());
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded(extended: false))
 app.use(app.router)
 # all environments
 app.set('port', process.env.PORT || 5000);

@@ -5,30 +5,36 @@ __ = require("underscore")
 mongoose.connect(config.db.connection)
 
 exports.user_push_track = (req, res)->
-	if Math.abs(req.body.lat)<90 && Math.abs(req.body.lon)<180 && parseInt(req.body.time)>0
-		db_model.User.count({'device_id': req.body.device_id, 'track': {'$elemMatch': {'time':parseInt(req.body.time)}}}).exec (err, count)->
-			if count>0
-				res.json
-					status: "Error. Already exist"
-			else
-				db_model.User.findOne({device_id: req.body.device_id}).exec (err, user)->
-					if user
-						user.track.push {lon: req.body.lon, lat: req.body.lat, time: req.body.time}
-						user.save (err) ->
-							console.log err
-							res.json
-								status: 200
-					else
-						user = new db_model.User
-							device_id: req.body.device_id
-						user.track.push {lon: req.body.lon, lat: req.body.lat, time: req.body.time}
-						user.save (err) ->
-							console.log err
-							res.json
-								status: 200
-	else
-		res.json
-			status: "Error. Incorrect data."
+	db_model.User.findOne({device_id: req.body.device_id}).exec (err, user)->
+		if user
+			for track in req.body.track
+				the_time = new Date(parseInt(track.time))
+				is_repeat = __.find(user.track, (c_res)->
+									c_res.time.toString() == the_time.toString()
+						)
+				if !is_repeat&&Math.abs(track.lat)<90 && Math.abs(track.lon)<180 && parseInt(track.time)>0
+					user.track.push {lon: track.lon, lat: track.lat, time: track.time}
+					user.save (err) ->
+						console.log err
+			res.json
+				status: 200
+				message: "Data recorded!"
+		else
+			user = new db_model.User
+				device_id: req.body.device_id
+			for track in req.body.track
+				the_time = new Date(parseInt(track.time))
+				is_repeat = __.find(user.track, (c_res)->
+									c_res.time.toString() == the_time.toString()
+						)
+				if !is_repeat&&Math.abs(track.lat)<90 && Math.abs(track.lon)<180 && parseInt(track.time)>0
+					user.track.push {lon: track.lon, lat: track.lat, time: track.time}
+					user.save (err) ->
+						console.log err
+			res.json
+				status: 200
+				message: "Data recorded!"
+
 
 exports.devices = (req, res)->
 	db_model.User.find().exec (err, dev)->
