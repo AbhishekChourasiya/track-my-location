@@ -1,33 +1,58 @@
-express = require('express');
-http = require('http');
-path = require('path');
-fs = require('fs')
+express = require('express')
+path = require('path')
+favicon = require('serve-favicon')
+logger = require('morgan')
+cookieParser = require('cookie-parser')
 bodyParser = require('body-parser')
-app = express();
+mongoose = require('mongoose')
+routes = require('./routes/index')
+users = require('./routes/users')
+controller = require('./routes/controller')
+http = require('http');
+app = express()
+# view engine setup
 
 global.config = require('yaml-config').readConfig('./config/config.yaml', app.settings.env)
-
+mongoose.connect(config.db.connection)
 db_model = require("./logic/model")
-
-# controllers
-controller = require('./routes/controller')
-app.use(express.bodyParser());
-app.use(bodyParser.json())
-app.use(bodyParser.urlencoded(extended: false))
-app.use(app.router)
-# all environments
-app.set('port', process.env.PORT || 5000);
-app.use(express.static(path.join(__dirname, 'public')));
-app.set('views', __dirname + '/views');
-app.set('view engine', 'jade');
-
+app.set 'views', path.join(__dirname, 'views')
+app.set 'view engine', 'jade'
+# uncomment after placing your favicon in /public
+#app.use(favicon(__dirname + '/public/favicon.ico'));
+app.use logger('dev')
+app.set('port', process.env.PORT || 4000);
+app.use bodyParser.json()
+app.use bodyParser.urlencoded(extended: false)
+app.use cookieParser()
+app.use express.static(path.join(__dirname, 'public'))
+#app.use '/', routes
+#app.use '/users', users
 app.post '/track/add', controller.user_push_track
 
 app.get '/', controller.devices
 app.get '/track/:objectId', controller.device_id
 app.get '/track/info/:objectId', controller.get_coordinates
+# catch 404 and forward to error handler
+app.use (req, res, next) ->
+  err = new Error('Not Found')
+  err.status = 404
+  next err
+  return
+# error handlers
+# development error handler
+# will print stacktrace
+if app.get('env') == 'development'
+  app.use (err, req, res, next) ->
+    res.status err.status or 500
+    res.render 'error',
+      message: err.message
+      error: err
+    return
+# production error handler
+# no stacktraces leaked to user
 
-#app.post '/home/user/:user_id/replay', services.user_push
+
+
 
 http.createServer(app).listen app.get('port'), ()->
   console.log 'Express server listening on port ' + app.get('port')

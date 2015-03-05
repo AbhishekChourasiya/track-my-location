@@ -2,7 +2,7 @@ mongoose = require('mongoose')
 moment = require('moment')
 db_model = require("../logic/model")
 __ = require("underscore")
-mongoose.connect(config.db.connection)
+
 
 exports.user_push_track = (req, res)->
 	db_model.User.findOne({device_id: req.body.device_id}).exec (err, user)->
