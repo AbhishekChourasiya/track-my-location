@@ -17,13 +17,13 @@ public class ApiTest extends InstrumentationTestCase {
         ITrackLocationClient client = new TrackLocationClient();
 
         TrackLocationRequest request = new TrackLocationRequest();
+        request.setDeviceId("testDeviceId");
         List<LatLonTime> locations = new ArrayList<LatLonTime>();
         locations.add(LatLonTime.getInstance(0, 0, System.currentTimeMillis()));
-
         request.setLocations(locations);
 
         TrackLocationResponse response = client.addTrack(request);
         assertNotNull(response);
-        assertEquals(response.getStatus(), 200);
+        assertEquals(response.getStatus(), TrackLocationResponse.RESPONSE_CODE_OK);
     }
 }

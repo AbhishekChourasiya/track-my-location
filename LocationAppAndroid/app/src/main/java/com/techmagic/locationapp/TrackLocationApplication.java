@@ -17,6 +17,7 @@ import io.fabric.sdk.android.Fabric;
 
 public class TrackLocationApplication extends Application {
 
+    public static String deviceId;
     private static final String KEY_REQUEST_DATA_NAME = "KEY_REQUEST_DATA_NAME";
     private LocationRequestData locationRequestData;
     private Location startLocation;
@@ -25,7 +26,7 @@ public class TrackLocationApplication extends Application {
     public void onCreate() {
         super.onCreate();
         Fabric.with(this, new Crashlytics());
-        TrackLocationRequest.deviceId = Utils.getUniqueDeviceId(getApplicationContext());
+        deviceId = Utils.getUniqueDeviceId(getApplicationContext());
         if (!retrieveLocationRequestData()) {
             setLocationRequestData(LocationRequestData.FREQUENCY_MEDIUM);
         }

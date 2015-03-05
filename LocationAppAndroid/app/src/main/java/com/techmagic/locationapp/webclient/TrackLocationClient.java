@@ -5,14 +5,17 @@ import android.util.Log;
 import com.techmagic.locationapp.webclient.model.TrackLocationRequest;
 import com.techmagic.locationapp.webclient.model.TrackLocationResponse;
 
+import java.lang.reflect.UndeclaredThrowableException;
+
 import retrofit.RestAdapter;
 import retrofit.http.Body;
+import retrofit.http.Headers;
 import retrofit.http.POST;
 
 public class TrackLocationClient implements ITrackLocationClient {
 
     private static final String TAG = TrackLocationClient.class.getCanonicalName();
-    private static final String API_URL = "http://10.3.1.115:5000";
+    private static final String API_URL = "http://track-my-location.herokuapp.com/";
     private TrackApi trackApi;
 
     public TrackLocationClient() {
@@ -25,14 +28,25 @@ public class TrackLocationClient implements ITrackLocationClient {
     }
 
     interface TrackApi {
+        @Headers("Content-Type: application/json")
         @POST("/track/add")
         TrackLocationResponse addTrack(@Body TrackLocationRequest request);
     }
 
     public TrackLocationResponse addTrack(TrackLocationRequest request) {
-        TrackLocationResponse response = trackApi.addTrack(request);
-        Log.d(TAG, "response status : " + response != null ?
-                String.valueOf(response.getStatus()) : String.valueOf(0));
+        TrackLocationResponse response = null;
+        try {
+           response = trackApi.addTrack(request);
+        } catch (UndeclaredThrowableException e) {
+            e.printStackTrace();
+        }
+
+        if (response != null) {
+            Log.d(TAG, "response status : " + String.valueOf(response.getStatus()));
+        } else {
+            Log.d(TAG, "response status : " + "error");
+        }
+
         return response;
     }
 
