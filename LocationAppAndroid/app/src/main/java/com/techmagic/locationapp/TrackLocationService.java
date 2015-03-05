@@ -23,6 +23,7 @@ import com.techmagic.locationapp.data.DataHelper;
 import com.techmagic.locationapp.data.model.LocationData;
 import com.techmagic.locationapp.event.AppEvent;
 import com.techmagic.locationapp.map.MapResultsActivity;
+import co.techmagic.hi.R;
 
 import de.greenrobot.event.EventBus;
 
