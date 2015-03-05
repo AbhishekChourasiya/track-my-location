@@ -5,35 +5,36 @@ __ = require("underscore")
 
 
 exports.user_push_track = (req, res)->
-	db_model.User.findOne({device_id: req.body.device_id}).exec (err, user)->
-		if user
-			for track in req.body.track
-				the_time = new Date(parseInt(track.time))
-				is_repeat = __.find(user.track, (c_res)->
-									c_res.time.toString() == the_time.toString()
-						)
-				if !is_repeat&&Math.abs(track.lat)<90 && Math.abs(track.lon)<180 && parseInt(track.time)>0
-					user.track.push {lon: track.lon, lat: track.lat, time: track.time}
-					user.save (err) ->
-						console.log err
-			res.json
-				status: 200
-				message: "Data recorded!"
-		else
-			user = new db_model.User
-				device_id: req.body.device_id
-			for track in req.body.track
-				the_time = new Date(parseInt(track.time))
-				is_repeat = __.find(user.track, (c_res)->
-									c_res.time.toString() == the_time.toString()
-						)
-				if !is_repeat&&Math.abs(track.lat)<90 && Math.abs(track.lon)<180 && parseInt(track.time)>0
-					user.track.push {lon: track.lon, lat: track.lat, time: track.time}
-					user.save (err) ->
-						console.log err
-			res.json
-				status: 200
-				message: "Data recorded!"
+	if req.body.track
+		db_model.User.findOne({device_id: req.body.device_id}).exec (err, user)->
+			if user
+				for track in req.body.track
+					the_time = new Date(parseInt(track.time))
+					is_repeat = __.find(user.track, (c_res)->
+										c_res.time.toString() == the_time.toString()
+							)
+					if !is_repeat&&Math.abs(track.lat)<90 && Math.abs(track.lon)<180 && parseInt(track.time)>0
+						user.track.push {lon: track.lon, lat: track.lat, time: track.time}
+						user.save (err) ->
+							console.log err
+				res.json
+					status: 200
+					message: "Data recorded!"
+			else
+				user = new db_model.User
+					device_id: req.body.device_id
+				for track in req.body.track
+					the_time = new Date(parseInt(track.time))
+					is_repeat = __.find(user.track, (c_res)->
+										c_res.time.toString() == the_time.toString()
+							)
+					if !is_repeat&&Math.abs(track.lat)<90 && Math.abs(track.lon)<180 && parseInt(track.time)>0
+						user.track.push {lon: track.lon, lat: track.lat, time: track.time}
+						user.save (err) ->
+							console.log err
+				res.json
+					status: 200
+					message: "Data recorded!"
 
 
 exports.devices = (req, res)->
