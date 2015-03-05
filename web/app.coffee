@@ -5,8 +5,6 @@ logger = require('morgan')
 cookieParser = require('cookie-parser')
 bodyParser = require('body-parser')
 mongoose = require('mongoose')
-routes = require('./routes/index')
-users = require('./routes/users')
 controller = require('./routes/controller')
 http = require('http');
 app = express()
@@ -25,8 +23,6 @@ app.use bodyParser.json()
 app.use bodyParser.urlencoded(extended: false)
 app.use cookieParser()
 app.use express.static(path.join(__dirname, 'public'))
-#app.use '/', routes
-#app.use '/users', users
 app.post '/track/add', controller.user_push_track
 
 app.get '/', controller.devices
