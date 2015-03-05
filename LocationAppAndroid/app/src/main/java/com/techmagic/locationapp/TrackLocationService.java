@@ -5,6 +5,7 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
@@ -21,6 +22,7 @@ import com.google.android.gms.location.LocationServices;
 import com.techmagic.locationapp.data.DataHelper;
 import com.techmagic.locationapp.data.model.LocationData;
 import com.techmagic.locationapp.event.AppEvent;
+import com.techmagic.locationapp.map.MapResultsActivity;
 
 import de.greenrobot.event.EventBus;
 
@@ -186,6 +188,18 @@ public class TrackLocationService extends Service implements GoogleApiClient.Con
                         .setSmallIcon(R.drawable.ic_launcher)
                         .setContentTitle(getString(R.string.app_name))
                         .setContentText(text);
+
+        Intent resultIntent = new Intent(this, MapResultsActivity.class);
+
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+        stackBuilder.addParentStack(MapResultsActivity.class);
+        stackBuilder.addNextIntent(resultIntent);
+        PendingIntent resultPendingIntent =
+                stackBuilder.getPendingIntent(
+                        0,
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                );
+        mBuilder.setContentIntent(resultPendingIntent);
 
         NotificationManager mNotificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
