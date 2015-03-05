@@ -36,6 +36,11 @@ public class Utils {
         return time;
     }
 
+    public static String formatDateAndTime(long milis) {
+        String time = new SimpleDateFormat("MMMM-yyyy-dd HH:mm").format(new Date(milis));
+        return time;
+    }
+
     public static String getUniqueDeviceId(Context context) {
         String myAndroidDeviceId = "";
         TelephonyManager mTelephony = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);

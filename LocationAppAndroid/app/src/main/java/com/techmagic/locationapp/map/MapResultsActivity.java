@@ -147,7 +147,7 @@ public class MapResultsActivity extends ActionBarActivity {
         for (LocationData d : locations) {
             MarkerOptions mo = new MarkerOptions();
             mo.position(new LatLng(d.getLatitude(), d.getLongitude()));
-            mapFragment.getMap().addMarker(mo);
+            mapFragment.getMap().addMarker(mo).setTitle(Utils.formatDateAndTime(d.getTimestamp()));
         }
     }
 
