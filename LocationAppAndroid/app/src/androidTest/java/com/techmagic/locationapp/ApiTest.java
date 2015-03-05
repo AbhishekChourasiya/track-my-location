@@ -47,8 +47,6 @@ public class ApiTest extends InstrumentationTestCase {
 
         TrackLocationRequest request = new TrackLocationRequest();
         request.setDeviceId(deviceId);
-        List<LatLonTime> locations = new ArrayList<LatLonTime>();
-        request.setLocations(locations);
 
         TrackLocationResponse response = client.addTrack(request);
         assertNotNull(response);
