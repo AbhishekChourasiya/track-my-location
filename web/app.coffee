@@ -52,7 +52,5 @@ if app.get('env') == 'development'
 # no stacktraces leaked to user
 
 
-
-
 http.createServer(app).listen app.get('port'), ()->
   console.log 'Express server listening on port ' + app.get('port')
