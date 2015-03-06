@@ -6,6 +6,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
@@ -33,7 +34,9 @@ public class TrackLocationSyncReceiver extends BroadcastReceiver {
                 dataHelper = DataHelper.getInstance(context);
                 locations = dataHelper.getLocationsToSync();
                 if (locations != null && locations.size() > 0) {
-                    TrackLocationRequest request = TrackLocationRequest.getInstance(locations);
+                    String deviceId = TrackLocationPreferencesManager.getDeviceId(context);
+                    String userName = TrackLocationPreferencesManager.getUserName(context);
+                    TrackLocationRequest request = TrackLocationRequest.getInstance(locations, deviceId, userName);
                     ITrackLocationClient client = new TrackLocationClient();
                     response = client.addTrack(request);
                     if (response != null && response.getStatus() == TrackLocationResponse.RESPONSE_CODE_OK) {

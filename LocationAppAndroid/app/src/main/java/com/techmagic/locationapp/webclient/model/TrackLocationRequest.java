@@ -14,9 +14,9 @@ public class TrackLocationRequest {
     @SerializedName("track")
     private List<LatLonTime> locations;
 
-    public static TrackLocationRequest getInstance(List<LocationData> locations) {
+    public static TrackLocationRequest getInstance(List<LocationData> locations, String deviceId, String userName) {
         TrackLocationRequest request = new TrackLocationRequest();
-        request.setDeviceId(TrackLocationApplication.deviceId);
+        request.setDeviceId(deviceId);
         List<LatLonTime> latLonTimeList = new ArrayList<>();
         for (LocationData d : locations) {
             LatLonTime latLonTime = new LatLonTime();

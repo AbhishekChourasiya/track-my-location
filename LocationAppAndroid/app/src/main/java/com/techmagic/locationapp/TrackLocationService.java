@@ -22,7 +22,6 @@ import com.google.android.gms.location.LocationServices;
 import com.techmagic.locationapp.data.DataHelper;
 import com.techmagic.locationapp.data.model.LocationData;
 import com.techmagic.locationapp.event.AppEvent;
-import com.techmagic.locationapp.map.MapResultsActivity;
 import co.techmagic.hi.R;
 
 import de.greenrobot.event.EventBus;
@@ -190,10 +189,10 @@ public class TrackLocationService extends Service implements GoogleApiClient.Con
                         .setContentTitle(getString(R.string.app_name))
                         .setContentText(text);
 
-        Intent resultIntent = new Intent(this, MapResultsActivity.class);
+        Intent resultIntent = new Intent(this, MainActivity.class);
 
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-        stackBuilder.addParentStack(MapResultsActivity.class);
+        stackBuilder.addParentStack(MainActivity.class);
         stackBuilder.addNextIntent(resultIntent);
         PendingIntent resultPendingIntent =
                 stackBuilder.getPendingIntent(

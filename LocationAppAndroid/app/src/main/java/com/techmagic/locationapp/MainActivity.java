@@ -1,16 +1,24 @@
 package com.techmagic.locationapp;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.database.ContentObserver;
 import android.os.Handler;
+import android.preference.Preference;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
@@ -40,6 +48,7 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
     private GoogleApiClient googleApiClient ;
     private TrackLocationApplication app;
     private Handler handler = new Handler();
+    private AlertDialog dialogEditName;
 
     private ContentObserver contentObserver = new ContentObserver(handler) {
         @Override
@@ -58,6 +67,10 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.inject(this);
+
+        if (!TrackLocationPreferencesManager.isUserNameChosen(getApplicationContext())) {
+            showEditNameDialog();
+        }
 
         app = (TrackLocationApplication) getApplication();
 
@@ -286,6 +299,47 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
         args.putInt("dialog_error", errorCode);
         dialogFragment.setArguments(args);
         dialogFragment.show(getFragmentManager(), "errordialog");
+    }
+
+    private void showEditNameDialog() {
+        View view = LayoutInflater.from(this).inflate(R.layout.dialog_edit_name, null);
+        final EditText editText = (EditText) view.findViewById(R.id.et_name);
+        editText.setText(TrackLocationPreferencesManager.getUserName(getApplicationContext()));
+        editText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+                Button btnSubmit = dialogEditName.getButton(AlertDialog.BUTTON_POSITIVE);
+                if (charSequence.length() == 0) {
+                    btnSubmit.setEnabled(false);
+                } else {
+                    btnSubmit.setEnabled(true);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Edit user name");
+        builder.setView(view);
+        builder.setPositiveButton("Submit", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String userName = editText.getText().toString();
+                TrackLocationPreferencesManager.setUserName(userName, getApplicationContext());
+                TrackLocationPreferencesManager.setUserNameChosen(getApplicationContext());
+            }
+        });
+        dialogEditName = builder.create();
+        dialogEditName.show();
     }
 
 }

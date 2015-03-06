@@ -17,8 +17,8 @@ import io.fabric.sdk.android.Fabric;
 
 public class TrackLocationApplication extends Application {
 
-    public static String deviceId;
     private static final String KEY_REQUEST_DATA_NAME = "KEY_REQUEST_DATA_NAME";
+
     private LocationRequestData locationRequestData;
     private Location startLocation;
 
@@ -26,7 +26,10 @@ public class TrackLocationApplication extends Application {
     public void onCreate() {
         super.onCreate();
         Fabric.with(this, new Crashlytics());
-        deviceId = Utils.getUniqueDeviceId(getApplicationContext());
+
+        checkAndSetDeviceId();
+        checkAndSetUserName();
+
         if (!retrieveLocationRequestData()) {
             setLocationRequestData(LocationRequestData.FREQUENCY_MEDIUM);
         }
@@ -52,6 +55,11 @@ public class TrackLocationApplication extends Application {
     }
 
     public LocationRequestData getLocationRequestData() {
+        if (locationRequestData == null) {
+            if (!retrieveLocationRequestData()) {
+                setLocationRequestData(LocationRequestData.FREQUENCY_MEDIUM);
+            }
+        }
         return locationRequestData;
     }
 
@@ -72,7 +80,21 @@ public class TrackLocationApplication extends Application {
         return locationRequest;
     }
 
-    protected void initializeDB() {
+    private void checkAndSetDeviceId() {
+        if (TextUtils.isEmpty(TrackLocationPreferencesManager.getDeviceId(this))) {
+            String deviceId = Utils.getUniqueDeviceId(this);
+            TrackLocationPreferencesManager.setDeviceId(deviceId, this);
+        }
+    }
+
+    private void checkAndSetUserName() {
+        if (TextUtils.isEmpty(TrackLocationPreferencesManager.getUserName(this))) {
+            String userName = android.os.Build.MODEL;
+            TrackLocationPreferencesManager.setUserName(userName, this);
+        }
+    }
+
+    private void initializeDB() {
         Configuration.Builder configurationBuilder = new Configuration.Builder(this);
         configurationBuilder.addModelClasses(LocationData.class);
         ActiveAndroid.initialize(configurationBuilder.create());
