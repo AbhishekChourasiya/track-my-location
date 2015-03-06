@@ -97,8 +97,14 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.action_map) {
+        if (id == R.id.action_map_markers) {
             Intent i = new Intent(this, MapResultsActivity.class);
+            i.putExtra(MapResultsActivity.EXTRA_MARKER_MODE, MapResultsActivity.MapMarkerMode.MARKER);
+            startActivity(i);
+            return true;
+        } else if (id == R.id.action_map_circles) {
+            Intent i = new Intent(this, MapResultsActivity.class);
+            i.putExtra(MapResultsActivity.EXTRA_MARKER_MODE, MapResultsActivity.MapMarkerMode.CIRCLE);
             startActivity(i);
             return true;
         }

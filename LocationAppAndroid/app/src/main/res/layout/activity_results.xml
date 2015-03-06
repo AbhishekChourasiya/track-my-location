@@ -26,7 +26,7 @@
             android:id="@+id/btn_time_from"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_weight="2"
             android:text="Time from"/>
 
     </LinearLayout>
@@ -52,7 +52,7 @@
             android:id="@+id/btn_time_to"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_weight="2"
             android:text="Time to"/>
 
     </LinearLayout>

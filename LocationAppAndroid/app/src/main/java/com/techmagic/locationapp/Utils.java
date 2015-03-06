@@ -32,12 +32,12 @@ public class Utils {
     }
 
     public static String formatDate(long milis) {
-        String time = new SimpleDateFormat("MM-yyyy-dd").format(new Date(milis));
+        String time = new SimpleDateFormat("MMMM dd, yyyy").format(new Date(milis));
         return time;
     }
 
     public static String formatDateAndTime(long milis) {
-        String time = new SimpleDateFormat("MMMM-yyyy-dd HH:mm").format(new Date(milis));
+        String time = new SimpleDateFormat("HH:mm, dd 'of' MMMM yyyy").format(new Date(milis));
         return time;
     }
 

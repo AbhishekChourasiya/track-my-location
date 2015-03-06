@@ -5,6 +5,7 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -17,7 +18,11 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import co.techmagic.hi.R;
@@ -38,8 +43,10 @@ import butterknife.OnClick;
 
 
 public class MapResultsActivity extends ActionBarActivity {
+    public static final String EXTRA_MARKER_MODE = "EXTRA_MARKER_MODE";
 
     private static final int ZOOM_LEVEL = 15;
+    private static final int CIRCLE_RADIUS = 100;
     private MapFragment mapFragment;
     private Map<String, Integer> filterData;
     private String[] items;
@@ -57,6 +64,7 @@ public class MapResultsActivity extends ActionBarActivity {
     private int hourTo = 23;
 
     private FilterMode filterMode;
+    private MapMarkerMode markerMode;
 
     @InjectView(R.id.btn_date_from) Button btnDateFrom;
     @InjectView(R.id.btn_time_from) Button btnTimeFrom;
@@ -66,6 +74,12 @@ public class MapResultsActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        markerMode = (MapMarkerMode) getIntent().getSerializableExtra(EXTRA_MARKER_MODE);
+        if (markerMode == null) {
+            throw new IllegalArgumentException("Marker mode not set");
+        }
+
         setContentView(R.layout.activity_results);
         ButterKnife.inject(this);
 
@@ -140,15 +154,33 @@ public class MapResultsActivity extends ActionBarActivity {
             return;
         }
 
+        GoogleMap map = mapFragment.getMap();
         LocationData locationToZoom = locations.get(0);
-        mapFragment.getMap().moveCamera(CameraUpdateFactory
+        map.moveCamera(CameraUpdateFactory
                 .newLatLngZoom(new LatLng(locationToZoom.getLatitude(), locationToZoom.getLongitude()), ZOOM_LEVEL));
 
-        for (LocationData d : locations) {
-            MarkerOptions mo = new MarkerOptions();
-            mo.position(new LatLng(d.getLatitude(), d.getLongitude()));
-            mapFragment.getMap().addMarker(mo).setTitle(Utils.formatDateAndTime(d.getTimestamp()));
+        if (markerMode == MapMarkerMode.MARKER) {
+            for (LocationData d : locations) {
+                MarkerOptions mo = new MarkerOptions();
+                LatLng position = new LatLng(d.getLatitude(), d.getLongitude());
+                mo.position(position);
+                map.addMarker(mo).setTitle(Utils.formatDateAndTime(d.getTimestamp()));
+            }
+        } else {
+            for (LocationData d : locations) {
+                LatLng position = new LatLng(d.getLatitude(), d.getLongitude());
+                map.addCircle(new CircleOptions()
+                        .center(position)
+                        .radius(CIRCLE_RADIUS)
+                        .strokeColor(getResources().getColor(R.color.color_map_circle))
+                        .fillColor(getResources().getColor(R.color.color_map_circle)));
+                MarkerOptions mo = new MarkerOptions();
+                mo.position(position)
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.pointer_transparent));
+                map.addMarker(mo).setTitle(Utils.formatDateAndTime(d.getTimestamp()));
+            }
         }
+
     }
 
     private void initFilterData() {
@@ -332,7 +364,11 @@ public class MapResultsActivity extends ActionBarActivity {
     }
 
     enum FilterMode {
-        FROM_FILTER, TO_FILTER;
+        FROM_FILTER, TO_FILTER
+    }
+
+    public enum MapMarkerMode {
+        CIRCLE, MARKER
     }
 
 }
