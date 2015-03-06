@@ -5,5 +5,6 @@
 .DS_Store
 build/
 *.iml
+node_modules/
 .idea/
 *.apk
