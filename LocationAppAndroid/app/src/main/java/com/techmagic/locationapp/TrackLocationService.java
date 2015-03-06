@@ -9,6 +9,7 @@ import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
@@ -22,6 +23,14 @@ import com.google.android.gms.location.LocationServices;
 import com.techmagic.locationapp.data.DataHelper;
 import com.techmagic.locationapp.data.model.LocationData;
 import com.techmagic.locationapp.event.AppEvent;
+import com.techmagic.locationapp.webclient.ITrackLocationClient;
+import com.techmagic.locationapp.webclient.TrackLocationClient;
+import com.techmagic.locationapp.webclient.model.FriendResult;
+import com.techmagic.locationapp.webclient.model.TrackLocationRequest;
+import com.techmagic.locationapp.webclient.model.TrackLocationResponse;
+
+import java.util.List;
+
 import co.techmagic.hi.R;
 
 import de.greenrobot.event.EventBus;
@@ -91,6 +100,7 @@ public class TrackLocationService extends Service implements GoogleApiClient.Con
             app.setStartLocation(location);
         }
         updateLocationData(location);
+        synchronizeData();
     }
 
     @Override
@@ -140,14 +150,11 @@ public class TrackLocationService extends Service implements GoogleApiClient.Con
         LocationRequest locationRequest = app.createLocationRequest();
         LocationServices.FusedLocationApi.requestLocationUpdates(
                 googleApiClient, locationRequest, this);
-
-        scheduleDataSynchronization();
     }
 
     private void stopLocationUpdates() {
         LocationServices.FusedLocationApi.removeLocationUpdates(
                 googleApiClient, this);
-        stopDataSynchronization();
     }
 
     private void scheduleDataSynchronization() {
@@ -212,6 +219,60 @@ public class TrackLocationService extends Service implements GoogleApiClient.Con
         NotificationManager mNotificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         mNotificationManager.cancel(notificationId);
+    }
+
+    private void synchronizeData() {
+        //TODO
+        new AsyncTask<Void, Void, TrackLocationResponse>() {
+            private List<LocationData> locations;
+            private DataHelper dataHelper;
+
+            @Override
+            protected TrackLocationResponse doInBackground(Void[] params) {
+                TrackLocationResponse response = null;
+                dataHelper = DataHelper.getInstance(getApplicationContext());
+                locations = dataHelper.getLocationsToSync();
+                if (locations != null && locations.size() > 0) {
+                    String deviceId = TrackLocationPreferencesManager.getDeviceId(getApplicationContext());
+                    String userName = TrackLocationPreferencesManager.getUserName(getApplicationContext());
+                    TrackLocationRequest request = TrackLocationRequest.getInstance(locations, deviceId, userName);
+                    ITrackLocationClient client = new TrackLocationClient();
+                    response = client.addTrack(request);
+                    if (response != null && response.getStatus() == TrackLocationResponse.RESPONSE_CODE_OK) {
+                        Log.d("TrackLocationSync", "Synced " + locations.size() + " items");
+                        dataHelper.markLocationsSynced(locations);
+                    }
+                } else {
+                    Log.d("TrackLocationSync", "No data to be synced");
+                }
+                return response;
+            }
+
+            @Override
+            protected void onPostExecute(TrackLocationResponse response) {
+                super.onPostExecute(response);
+
+                if (response != null && response.getStatus() == TrackLocationResponse.RESPONSE_CODE_OK) {
+                    String message = null;
+                    List<FriendResult> results = response.getResult();
+                    if (results != null && results.size() > 0) {
+                        StringBuilder messageBuilder = new StringBuilder();
+                        messageBuilder.append("Hi from ");
+                        for (FriendResult r : results) {
+                            messageBuilder.append(" ");
+                            messageBuilder.append(r.getTitle());
+                            messageBuilder.append(",");
+                        }
+                        messageBuilder.deleteCharAt(messageBuilder.length() - 1);
+                        message = messageBuilder.toString();
+                    } else {
+                        message = "Sync " + locations.size() + " items at " + Utils.formatTime(System.currentTimeMillis());
+                    }
+
+                    updateNotification(message);
+                }
+            }
+        }.execute();
     }
 
 }

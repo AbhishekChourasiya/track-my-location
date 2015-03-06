@@ -11,18 +11,18 @@ public class TrackLocationRequest {
 
     @SerializedName("device_id")
     private String deviceId;
+    @SerializedName("device_name")
+    private String deviceName;
     @SerializedName("track")
     private List<LatLonTime> locations;
 
-    public static TrackLocationRequest getInstance(List<LocationData> locations, String deviceId, String userName) {
+    public static TrackLocationRequest getInstance(List<LocationData> locations, String deviceId, String deviceName) {
         TrackLocationRequest request = new TrackLocationRequest();
         request.setDeviceId(deviceId);
+        request.setDeviceName(deviceName);
         List<LatLonTime> latLonTimeList = new ArrayList<>();
         for (LocationData d : locations) {
-            LatLonTime latLonTime = new LatLonTime();
-            latLonTime.setLat(d.getLatitude());
-            latLonTime.setLon(d.getLongitude());
-            latLonTime.setTime(d.getTimestamp());
+            LatLonTime latLonTime = LatLonTime.getInstance(d.getLatitude(), d.getLongitude(), d.getTimestamp());
             latLonTimeList.add(latLonTime);
         }
         request.setLocations(latLonTimeList);
@@ -39,5 +39,9 @@ public class TrackLocationRequest {
 
     public void setDeviceId(String deviceId) {
         this.deviceId = deviceId;
+    }
+
+    public void setDeviceName(String deviceName) {
+        this.deviceName = deviceName;
     }
 }
