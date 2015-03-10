@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">hi</string>
+    <string name="app_name">Track My Location</string>
 
     <string name="rb_high">5 seconds, 1 meter displacement</string>
     <string name="rb_medium">5 minutes, 100 meters displacement</string>

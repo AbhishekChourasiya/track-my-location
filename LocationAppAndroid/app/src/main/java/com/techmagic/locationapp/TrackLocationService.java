@@ -100,7 +100,6 @@ public class TrackLocationService extends Service implements GoogleApiClient.Con
             app.setStartLocation(location);
         }
         updateLocationData(location);
-        synchronizeData();
     }
 
     @Override
@@ -150,11 +149,13 @@ public class TrackLocationService extends Service implements GoogleApiClient.Con
         LocationRequest locationRequest = app.createLocationRequest();
         LocationServices.FusedLocationApi.requestLocationUpdates(
                 googleApiClient, locationRequest, this);
+        scheduleDataSynchronization();
     }
 
     private void stopLocationUpdates() {
         LocationServices.FusedLocationApi.removeLocationUpdates(
                 googleApiClient, this);
+        stopDataSynchronization();
     }
 
     private void scheduleDataSynchronization() {
@@ -182,7 +183,6 @@ public class TrackLocationService extends Service implements GoogleApiClient.Con
                 (float) latitude,
                 (float) longitude);
 
-        String distanceText = String.format("%.2f m.", distance);
         String timeText = Utils.formatTime(System.currentTimeMillis());
 
         DataHelper.getInstance(this).saveLocation(LocationData.getInstance(latitude, longitude));
@@ -222,7 +222,6 @@ public class TrackLocationService extends Service implements GoogleApiClient.Con
     }
 
     private void synchronizeData() {
-        //TODO
         new AsyncTask<Void, Void, TrackLocationResponse>() {
             private List<LocationData> locations;
             private DataHelper dataHelper;

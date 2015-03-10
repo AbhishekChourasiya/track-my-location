@@ -54,7 +54,7 @@ public class TrackLocationSyncReceiver extends BroadcastReceiver {
                 super.onPostExecute(response);
 
                 if (response != null && response.getStatus() == TrackLocationResponse.RESPONSE_CODE_OK) {
-                    String message = "Sync " + locations.size() + " items at " + Utils.formatTime(System.currentTimeMillis());
+                    String message = "Synchronized " + locations.size() + " items at " + Utils.formatTime(System.currentTimeMillis());
                     updateNotification(message, context);
                 }
             }
