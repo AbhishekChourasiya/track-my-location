@@ -28,6 +28,7 @@ app.post '/track/add', controller.user_push_track
 app.get '/', controller.devices
 app.get '/track/:objectId', controller.device_id
 app.get '/track/info/:objectId', controller.get_coordinates
+app.get '/track/delete/:objectId', controller.delete_device
 # catch 404 and forward to error handler
 app.use (req, res, next) ->
   err = new Error('Not Found')

@@ -8,7 +8,7 @@ div#map-canvas
 br
 div
 	for dev in device.track
-		div #{dev.time}(#{dev.lat}; #{dev.lon})
+		div #{dev.time}(#{dev.loc.lat}; #{dev.loc.lon})
 		br
 
 
@@ -29,9 +29,9 @@ script(type="text/javascript").
 			url: "/track/info/#{device.device_id}",
 			success: function(data) {
 				var result = JSON.parse ( data );
+				console.log(result);
 				for(i=0; i<result.dev.length; i++){
-					console.log(result.dev[i].lat);
-					var pos = new google.maps.LatLng(result.dev[i].lat, result.dev[i].lon);
+					var pos = new google.maps.LatLng(result.dev[i].loc.lat, result.dev[i].loc.lon);
 					var marker = new google.maps.Marker({position: pos, map: map, title:result.dev[i].time});
 				}
 			},
