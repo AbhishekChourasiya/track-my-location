@@ -2,6 +2,9 @@ mongoose = require('mongoose')
 
 
 UserSchema = new mongoose.Schema
+	name: {type: String, trim: true}
+	fb_id: {type: String, unique: true, sparse: true}
+	gender: {type: String, trim: true, 'enum': ["male", "female"]}
 	device_id: { type: String }
 	device_name: { type: String }
 	title: { type: String }
@@ -19,7 +22,7 @@ UserSchema.pre 'save', (next, done) ->
 	if this.device_name
 		this.title = this.device_name
 	else
-		this.title = this.device_id
+		this.title = this.fb_id
 	next()
 
 UserSchema.set('toJSON', { getters: true, virtuals: true })
