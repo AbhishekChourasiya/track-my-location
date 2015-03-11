@@ -7,3 +7,4 @@ build/
 *.iml
 node_modules/
 .idea/
+*.apk

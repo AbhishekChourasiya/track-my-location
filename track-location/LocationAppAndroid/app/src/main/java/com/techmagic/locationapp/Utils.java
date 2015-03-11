@@ -1,5 +1,9 @@
 package com.techmagic.locationapp;
 
+import android.content.Context;
+import android.provider.Settings;
+import android.telephony.TelephonyManager;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -22,5 +26,30 @@ public class Utils {
         return time;
     }
 
+    public static String formatTimeWithoutSeconds(long milis) {
+        String time = new SimpleDateFormat("HH:mm").format(new Date(milis));
+        return time;
+    }
+
+    public static String formatDate(long milis) {
+        String time = new SimpleDateFormat("MMMM dd, yyyy").format(new Date(milis));
+        return time;
+    }
+
+    public static String formatDateAndTime(long milis) {
+        String time = new SimpleDateFormat("HH:mm, dd 'of' MMMM yyyy").format(new Date(milis));
+        return time;
+    }
+
+    public static String getUniqueDeviceId(Context context) {
+        String myAndroidDeviceId = "";
+        TelephonyManager mTelephony = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+        if (mTelephony.getDeviceId() != null) {
+            myAndroidDeviceId = mTelephony.getDeviceId();
+        } else {
+            myAndroidDeviceId = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
+        }
+        return myAndroidDeviceId;
+    }
 
 }

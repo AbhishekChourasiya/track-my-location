@@ -18,7 +18,7 @@ public class DataHelper {
         this.context = context;
     }
 
-    public static DataHelper getInstance(Context context) {
+    public static synchronized DataHelper getInstance(Context context) {
         if (instance == null) {
             instance = new DataHelper(context);
         }
@@ -49,6 +49,33 @@ public class DataHelper {
                 .where(Data.LocationData.COLUMN_TIMESTAMP + " > " + (System.currentTimeMillis() - lastMilliSeconds))
                 .execute();
         return data;
+    }
+
+    public List<LocationData> getLastLocations(long from, long to) {
+        List<LocationData> data = new Select().from(LocationData.class)
+                .orderBy(Data.LocationData.COLUMN_TIMESTAMP + " DESC")
+                .where(Data.LocationData.COLUMN_TIMESTAMP + " > " + from)
+                .and(Data.LocationData.COLUMN_TIMESTAMP + " < " + to)
+                .execute();
+        return data;
+    }
+
+    public List<LocationData> getLocationsToSync() {
+        List<LocationData> data = new Select().from(LocationData.class)
+                .where(Data.LocationData.COLUMN_SYNCED + " = " + 0)
+                .execute();
+        return data;
+    }
+
+    public void markLocationsSynced(List<LocationData> locations) {
+        for (LocationData location : locations) {
+            markLocationSynced(location);
+        }
+    }
+
+    public void markLocationSynced(LocationData location) {
+        location.setSynced(true);
+        location.save();
     }
 
     public void deleteAllLocations() {
