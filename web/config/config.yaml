@@ -1,3 +1,0 @@
-default:
-  db:
-    connection: "mongodb://root:root@ds049219.mongolab.com:49219/track_my_location"
