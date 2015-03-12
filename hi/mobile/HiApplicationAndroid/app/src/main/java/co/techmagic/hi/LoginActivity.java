@@ -5,7 +5,6 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.Toast;
 
@@ -24,6 +23,7 @@ import java.util.List;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import co.techmagic.hi.model.User;
+import co.techmagic.hi.util.HiParseUtil;
 
 
 public class LoginActivity extends ActionBarActivity {
@@ -107,6 +107,7 @@ public class LoginActivity extends ActionBarActivity {
 
                     User user = new User(facebookId, name, gender);
                     HiPreferencesManager.saveUser(user, getApplicationContext());
+                    HiParseUtil.subscribePushes(HiParseUtil.getChanelNameByFacebookId(facebookId));
                     Toast.makeText(LoginActivity.this, user.getName() + " is logged in",Toast.LENGTH_SHORT).show();
                     showMainActivity();
                 }

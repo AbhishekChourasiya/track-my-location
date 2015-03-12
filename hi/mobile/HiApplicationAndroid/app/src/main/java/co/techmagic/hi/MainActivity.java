@@ -3,18 +3,15 @@ package co.techmagic.hi;
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 
 import com.facebook.Session;
-import com.parse.Parse;
-import com.parse.ParseException;
 import com.parse.ParseFacebookUtils;
 import com.parse.ParseUser;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import co.techmagic.hi.model.User;
+import co.techmagic.hi.util.HiParseUtil;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -50,6 +47,7 @@ public class MainActivity extends ActionBarActivity {
 
     @OnClick(R.id.btn_logout)
     public void logout() {
+        HiParseUtil.unSubscribePushes(HiParseUtil.getChanelNameByFacebookId(user.getFacebookId()));
         HiPreferencesManager.deleteUser(getApplicationContext());
         logoutFacebook();
         showLoginActivity();
