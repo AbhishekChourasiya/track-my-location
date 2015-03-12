@@ -14,9 +14,12 @@ import com.parse.ParseUser;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import co.techmagic.hi.model.User;
 
 
 public class MainActivity extends ActionBarActivity {
+
+    private User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,7 +32,13 @@ public class MainActivity extends ActionBarActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        checkFacebookLogin();
+        checkLogin();
+    }
+
+    private void checkLogin() {
+        if ((user = HiPreferencesManager.getUser(getApplicationContext())) == null) {
+            showLoginActivity();
+        }
     }
 
     private void checkFacebookLogin() {
@@ -41,12 +50,18 @@ public class MainActivity extends ActionBarActivity {
 
     @OnClick(R.id.btn_logout)
     public void logout() {
+        HiPreferencesManager.deleteUser(getApplicationContext());
+        logoutFacebook();
+        showLoginActivity();
+    }
+
+    private void logoutFacebook() {
+        ParseFacebookUtils.initialize(getString(R.string.facebook_app_id));
         Session session = ParseFacebookUtils.getSession();
         if (session != null && !session.isClosed()) {
             session.closeAndClearTokenInformation();
         }
         ParseUser.logOut();
-        showLoginActivity();
     }
 
     private void showLoginActivity() {

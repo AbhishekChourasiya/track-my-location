@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Toast;
 
@@ -22,6 +23,7 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import co.techmagic.hi.model.User;
 
 
 public class LoginActivity extends ActionBarActivity {
@@ -87,9 +89,25 @@ public class LoginActivity extends ActionBarActivity {
         Request.executeMeRequestAsync(session, new Request.GraphUserCallback() {
 
             @Override
-            public void onCompleted(GraphUser user, Response response) {
-                if (user != null) {
-                    Toast.makeText(LoginActivity.this, user.getFirstName() + " is logged in",Toast.LENGTH_SHORT).show();
+            public void onCompleted(GraphUser graphUser, Response response) {
+                if (graphUser != null) {
+                    String facebookId = graphUser.getId();
+                    String firstName = graphUser.getFirstName();
+                    String lastName = graphUser.getLastName();
+                    String name = firstName + " " + lastName;
+                    String genderString = graphUser.asMap().get("gender").toString();
+                    User.Gender gender;
+                    if ("male".equals(genderString)) {
+                        gender = User.Gender.MALE;
+                    } else if ("female".equals(genderString)) {
+                        gender = User.Gender.FEMALE;
+                    } else {
+                        gender = User.Gender.OTHER;
+                    }
+
+                    User user = new User(facebookId, name, gender);
+                    HiPreferencesManager.saveUser(user, getApplicationContext());
+                    Toast.makeText(LoginActivity.this, user.getName() + " is logged in",Toast.LENGTH_SHORT).show();
                     showMainActivity();
                 }
             }
