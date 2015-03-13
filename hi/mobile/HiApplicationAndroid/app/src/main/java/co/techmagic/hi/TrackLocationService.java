@@ -36,7 +36,6 @@ import de.greenrobot.event.EventBus;
 public class TrackLocationService extends Service implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
-    private static final long SYNCHRONIZATION_INTERVAL = 60 * 60 * 1000;
     private static boolean isServiceRunning;
     private static final String TAG = TrackLocationService.class.getCanonicalName();
     private int notificationId = 9999;
@@ -221,24 +220,9 @@ public class TrackLocationService extends Service implements GoogleApiClient.Con
             @Override
             protected void onPostExecute(TrackLocationResponse response) {
                 super.onPostExecute(response);
-
-                if (response != null && response.getStatus() == IHiClient.RESPONSE_CODE_OK) {
-                    String message = null;
-                    List<FriendResult> results = response.getResult();
-                    if (results != null && results.size() > 0) {
-                        StringBuilder messageBuilder = new StringBuilder();
-                        messageBuilder.append("Hi from ");
-                        for (FriendResult r : results) {
-                            messageBuilder.append(" ");
-                            messageBuilder.append(r.getTitle());
-                            messageBuilder.append(",");
-                        }
-                        messageBuilder.deleteCharAt(messageBuilder.length() - 1);
-                        message = messageBuilder.toString();
-                    } else {
-                        message = "Sync " + locations.size() + " items at " + Utils.formatTime(System.currentTimeMillis());
-                    }
-
+                if (response != null && response.getStatus() == IHiClient.RESPONSE_CODE_OK
+                        && locations != null && locations.size() > 0) {
+                    String message = "Synchronized " + locations.size() + " items at " + Utils.formatTime(System.currentTimeMillis());
                     updateNotification(message);
                 }
             }

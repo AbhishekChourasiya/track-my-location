@@ -8,6 +8,7 @@ import com.activeandroid.query.Select;
 
 import java.util.List;
 
+import co.techmagic.hi.data.model.HiFriendRecord;
 import co.techmagic.hi.data.model.LocationData;
 
 public class DataHelper {
@@ -82,6 +83,31 @@ public class DataHelper {
     public void deleteAllLocations() {
         new Delete().from(LocationData.class).execute();
     }
+
+
+    public void saveHiFriendRecords(List<HiFriendRecord> friends, long time) {
+        for (HiFriendRecord f : friends) {
+            f.setTime(time);
+            saveHiFriendRecord(f);
+        }
+        notifyChanged(Data.HiFriendRecord.URI);
+    }
+
+    public void saveHiFriendRecord(HiFriendRecord friend) {
+        friend.save();
+    }
+
+    public void deleteAllHiFriendRecords() {
+        new Delete().from(HiFriendRecord.class).execute();
+    }
+
+    public List<HiFriendRecord> getAllHiFriendRecords() {
+        List<HiFriendRecord> friends = new Select()
+                .from(co.techmagic.hi.data.model.HiFriendRecord.class)
+                .orderBy(Data.HiFriendRecord.COLUMN_TIME + " desc").execute();
+        return friends;
+    }
+
 
     private void notifyChanged(Uri uri) {
         context.getContentResolver().notifyChange(uri, null);

@@ -3,8 +3,12 @@ package co.techmagic.hi;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.IntentSender;
+import android.database.ContentObserver;
+import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.widget.Button;
 
@@ -17,9 +21,15 @@ import com.google.android.gms.location.LocationServices;
 import com.parse.ParseFacebookUtils;
 import com.parse.ParseUser;
 
+import java.util.List;
+
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import co.techmagic.hi.adapter.HiFriendsAdapter;
+import co.techmagic.hi.data.Data;
+import co.techmagic.hi.data.DataHelper;
+import co.techmagic.hi.data.model.HiFriendRecord;
 import co.techmagic.hi.event.AppEvent;
 import co.techmagic.hi.webclient.model.User;
 import co.techmagic.hi.util.HiParseUtil;
@@ -34,9 +44,22 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
 
     private GoogleApiClient googleApiClient ;
     private User user;
+    private Handler handler = new Handler();
+    private HiFriendsAdapter hiFriendsAdapter;
+
+    private ContentObserver contentObserver = new ContentObserver(handler) {
+        @Override
+        public void onChange(boolean selfChange) {
+            super.onChange(selfChange);
+            refreshHiFriendsRecords();
+        }
+    };
+
 
     @InjectView(R.id.btn_toggle_tracking)
     Button btnToggleTracking;
+    @InjectView(R.id.rv_friends)
+    RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +67,7 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
         setContentView(R.layout.activity_main);
         ButterKnife.inject(this);
 
+        setupRecyclerView();
     }
 
     @Override
@@ -52,12 +76,14 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
         checkLogin();
         refreshUI();
         EventBus.getDefault().register(this);
+        registerContentObservers();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         EventBus.getDefault().unregister(this);
+        unRegisterContentObservers();
     }
 
     @Override
@@ -83,6 +109,18 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
         } else {
             showErrorDialog(result.getErrorCode());
         }
+    }
+
+    private void setupRecyclerView() {
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setHasFixedSize(true);
+
+        hiFriendsAdapter = new HiFriendsAdapter(getApplicationContext());
+        recyclerView.setAdapter(hiFriendsAdapter);
+
+        List<HiFriendRecord> friends = DataHelper.getInstance(getApplicationContext()).getAllHiFriendRecords();
+        hiFriendsAdapter.refresh(friends);
     }
 
     public void onEvent(AppEvent event) {
@@ -181,6 +219,19 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
         } else {
             btnToggleTracking.setText(R.string.btn_start_tracking);
         }
+    }
+
+    private void refreshHiFriendsRecords() {
+        List<HiFriendRecord> hiFriendRecords = DataHelper.getInstance(getApplicationContext()).getAllHiFriendRecords();
+        hiFriendsAdapter.refresh(hiFriendRecords);
+    }
+
+    private void registerContentObservers() {
+        getContentResolver().registerContentObserver(Data.HiFriendRecord.URI, false, contentObserver);
+    }
+
+    private void unRegisterContentObservers() {
+        getContentResolver().unregisterContentObserver(contentObserver);
     }
 
     private void logoutFacebook() {

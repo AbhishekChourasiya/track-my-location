@@ -20,7 +20,7 @@ public class HiClient implements IHiClient {
     private TrackApi trackApi;
 
     public HiClient() {
-        TrackLocationErrorHandler trackLocationErrorHandler = new TrackLocationErrorHandler();
+        HiErrorHandler trackLocationErrorHandler = new HiErrorHandler();
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setEndpoint(API_URL)
                 .setErrorHandler(trackLocationErrorHandler)
