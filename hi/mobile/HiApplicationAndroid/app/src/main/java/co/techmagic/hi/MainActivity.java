@@ -10,6 +10,8 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.Button;
 
 import com.facebook.Session;
@@ -46,6 +48,7 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
     private User user;
     private Handler handler = new Handler();
     private HiFriendsAdapter hiFriendsAdapter;
+    private Menu menu;
 
     private ContentObserver contentObserver = new ContentObserver(handler) {
         @Override
@@ -77,6 +80,28 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
         refreshUI();
         EventBus.getDefault().register(this);
         registerContentObservers();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        this.menu = menu;
+        refreshUI();
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_logout) {
+            logout();
+            return true;
+        } else if (id == R.id.action_toggle_tracking) {
+            toggleTracking();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -216,8 +241,18 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
     private void refreshUI() {
         if (TrackLocationService.isServiceRunning()) {
             btnToggleTracking.setText(R.string.btn_stop_tracking);
+            if (menu != null) {
+                MenuItem item = menu.getItem(1);
+                item.setIcon(R.drawable.ic_action_location_found);
+                item.setTitle(R.string.btn_stop_tracking);
+            }
         } else {
             btnToggleTracking.setText(R.string.btn_start_tracking);
+            if (menu != null) {
+                MenuItem item = menu.getItem(1);
+                item.setIcon(R.drawable.ic_action_location_off);
+                item.setTitle(R.string.btn_start_tracking);
+            }
         }
     }
 
