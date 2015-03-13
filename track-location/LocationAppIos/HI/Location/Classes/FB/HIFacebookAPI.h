@@ -1,0 +1,27 @@
+//
+//  HIFacebookAPI.h
+//  Location
+//
+//  Created by Rostyslav Stepanyak on 3/13/15.
+//  Copyright (c) 2015 Location. All rights reserved.
+//
+
+#import <Foundation/Foundation.h>
+#import <FacebookSDK/FacebookSDK.h>
+
+@protocol HIFacebookDelegate <NSObject>
+- (void)fbLoggedIn;
+- (void)fbLoggedOut;
+- (void)showMessage:(NSString *)alertText withTitle:(NSString *)alertTitle;
+@end
+
+@interface HIFacebookAPI : NSObject
++ (id)api;
+
++ (BOOL)openActiveSessionWithReadPermissions:(NSArray *)readPermissions
+                                allowLoginUI:(BOOL)allowLoginUI
+                           completionHandler:(FBSessionStateHandler)handler;
+- (void)sessionStateChanged:(FBSession *)session state:(FBSessionState) state error:(NSError *)error;
+- (void)checkSession;
+@property (nonatomic, strong) id <HIFacebookDelegate>delegate;
+@end
