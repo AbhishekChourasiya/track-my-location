@@ -1,22 +1,42 @@
 package co.techmagic.hi;
 
+import android.app.Dialog;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.widget.Button;
 
 import com.facebook.Session;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.ErrorDialogFragment;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
 import com.parse.ParseFacebookUtils;
 import com.parse.ParseUser;
 
 import butterknife.ButterKnife;
+import butterknife.InjectView;
 import butterknife.OnClick;
-import co.techmagic.hi.model.User;
+import co.techmagic.hi.event.AppEvent;
+import co.techmagic.hi.webclient.model.User;
 import co.techmagic.hi.util.HiParseUtil;
+import de.greenrobot.event.EventBus;
 
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends ActionBarActivity implements GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener {
 
+    private static final String TAG = MainActivity.class.getCanonicalName();
+    private static final int REQUEST_RESOLVE_ERROR = 9999;
+
+    private GoogleApiClient googleApiClient ;
     private User user;
+
+    @InjectView(R.id.btn_toggle_tracking)
+    Button btnToggleTracking;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +50,47 @@ public class MainActivity extends ActionBarActivity {
     protected void onResume() {
         super.onResume();
         checkLogin();
+        refreshUI();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Override
+    public void onConnected(Bundle bundle) {
+        Log.d(TAG, "onConnected");
+        startTrackLocationService();
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        Log.d(TAG, "onConnectionSuspended");
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult result) {
+        Log.d(TAG, "onConnectionFailed");
+        if (result.hasResolution()) {
+            try {
+                result.startResolutionForResult(this, REQUEST_RESOLVE_ERROR);
+            } catch (IntentSender.SendIntentException e) {
+                googleApiClient.connect();
+            }
+        } else {
+            showErrorDialog(result.getErrorCode());
+        }
+    }
+
+    public void onEvent(AppEvent event) {
+        switch (event) {
+            case SERVICE_STATE_CHANGED:
+                refreshUI();
+                break;
+        }
     }
 
     private void checkLogin() {
@@ -38,19 +99,88 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
-    private void checkFacebookLogin() {
-        ParseUser currentUser = ParseUser.getCurrentUser();
-        if (currentUser == null) {
-            showLoginActivity();
-        }
-    }
-
     @OnClick(R.id.btn_logout)
     public void logout() {
         HiParseUtil.unSubscribePushes(HiParseUtil.getChanelNameByFacebookId(user.getFacebookId()));
         HiPreferencesManager.deleteUser(getApplicationContext());
+        stopTracking();
         logoutFacebook();
         showLoginActivity();
+    }
+
+    @OnClick(R.id.btn_toggle_tracking)
+    public void toggleTracking() {
+        if (TrackLocationService.isServiceRunning()) {
+            stopTracking();
+        } else {
+            startTracking();
+        }
+    }
+
+    private void stopTracking() {
+        stopService(new Intent(this, TrackLocationService.class));
+    }
+
+    private void startTracking() {
+        connectGoogleApiClient();
+    }
+
+    private void connectGoogleApiClient() {
+        if (googleApiClient == null) {
+            if (createGoogleApiClient() != ConnectionResult.SUCCESS) {
+                return;
+            }
+        }
+
+        if (!(googleApiClient.isConnected() || googleApiClient.isConnecting())) {
+            googleApiClient.connect();
+        } else {
+            Log.d(TAG, "Client is connected");
+            startTrackLocationService();
+        }
+    }
+
+    private int createGoogleApiClient() {
+        int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
+        switch (status) {
+            case ConnectionResult.SUCCESS:
+                googleApiClient = new GoogleApiClient.Builder(this)
+                        .addConnectionCallbacks(this)
+                        .addOnConnectionFailedListener(this)
+                        .addApi(LocationServices.API)
+                        .build();
+                break;
+            case ConnectionResult.SERVICE_MISSING:
+            case ConnectionResult.SERVICE_VERSION_UPDATE_REQUIRED:
+            case ConnectionResult.SERVICE_DISABLED:
+                Dialog dialog = GooglePlayServicesUtil.getErrorDialog(status, this, REQUEST_RESOLVE_ERROR);
+                dialog.show();
+                break;
+        }
+        return status;
+    }
+
+    private void startTrackLocationService() {
+        startService(new Intent(this, TrackLocationService.class));
+    }
+
+    private void showErrorDialog(int errorCode) {
+        //TODO add errors handling
+        // Create a fragment for the error dialog
+        ErrorDialogFragment dialogFragment = new ErrorDialogFragment();
+        // Pass the error that should be displayed
+        Bundle args = new Bundle();
+        args.putInt("dialog_error", errorCode);
+        dialogFragment.setArguments(args);
+        dialogFragment.show(getFragmentManager(), "errordialog");
+    }
+
+    private void refreshUI() {
+        if (TrackLocationService.isServiceRunning()) {
+            btnToggleTracking.setText(R.string.btn_stop_tracking);
+        } else {
+            btnToggleTracking.setText(R.string.btn_start_tracking);
+        }
     }
 
     private void logoutFacebook() {
