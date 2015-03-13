@@ -3,10 +3,53 @@ moment = require('moment')
 db_model = require("../logic/model")
 __ = require("underscore")
 
+send_push = (user)->
+	#send push
+	Parse = require("parse").Parse
+	Parse.initialize config.parse_app_id, config.parse_js_key
+	# send message to Parse (android)
+	queryAndroid = new Parse.Query(Parse.Installation)
+	queryAndroid.equalTo "channels", "hi_" + user.fb_id
+	queryAndroid.equalTo "deviceType", "android"
+	Parse.Push.send
+		where: queryAndroid 
+		data:
+			alert: "Hi!"
+			msg: user.name + " is near you."
+			header: "Hi!"
+	,
+		success: ->
+			console.log "push sent"
+			
+		error: (error) ->
+			console.log "push error: "
+			console.log error
+
+exports.send_push1 = (user)->
+	#send push
+	Parse = require("parse").Parse
+	Parse.initialize config.parse_app_id, config.parse_js_key
+	# send message to Parse (android)
+	queryAndroid = new Parse.Query(Parse.Installation)
+	queryAndroid.equalTo "channels", "hi_1413522342292477"
+	queryAndroid.equalTo "deviceType", "android"
+	Parse.Push.send
+		where: queryAndroid 
+		data:
+			alert: "Hi!!!!"
+			msg:  " is near you."
+			header: "Hi!"
+	,
+		success: ->
+			console.log "push sent"
+			
+		error: (error) ->
+			console.log "push error: "
+			console.log error
 
 exports.user_push_track = (req, res)->
-	if req.body.track[0]&&req.body.device_id
-		db_model.User.findOne({device_id: req.body.device_id}).exec (err, user)->
+	if req.body.track[0]&&req.body.fb_id
+		db_model.User.findOne({fb_id: req.body.fb_id}).exec (err, user)->
 			if user
 				add_track req, user, (result)->
 					res.json
@@ -14,13 +57,9 @@ exports.user_push_track = (req, res)->
 						message: "Data recorded!"
 						result: result
 			else
-				user = new db_model.User
-					device_id: req.body.device_id
-				add_track req, user, (result)->
-					res.json
-						status: 200
-						message: "Data recorded!"
-						result: result
+				res.json
+					status: 444
+					message: "User not exist!"
 	else
 		res.json
 			status: 444
@@ -35,7 +74,7 @@ exports.devices = (req, res)->
 		res.render "devices", model
 
 exports.device_id = (req, res)->
-	db_model.User.findOne({device_id: req.params.objectId}).exec (err, dev)->
+	db_model.User.findOne({fb_id: req.params.objectId}).exec (err, dev)->
 		device = dev.toObject()
 		for d in device.track
 			d.time = moment(d.time).format('LLLL')
@@ -44,16 +83,14 @@ exports.device_id = (req, res)->
 		res.render "device_details", model
 
 exports.delete_device = (req, res)->
-	db_model.User.remove({device_id: req.params.objectId}).exec (err)->
+	db_model.User.remove({fb_id: req.params.objectId}).exec (err)->
 		res.redirect '/'
 
 exports.get_coordinates = (req, res)->
-	db_model.User.findOne({device_id: req.params.objectId}).exec (err, dev)->
+	db_model.User.findOne({fb_id: req.params.objectId}).exec (err, dev)->
 		res.json
 			dev:dev.track
 add_track = (req, user, callback)->
-	if req.body.device_name
-		user.device_name = req.body.device_name
 	for track in req.body.track
 		if track.loc.lat&&track.loc.lon&&track.time
 			is_repeat = __.find(user.track, (c_res)->
@@ -66,11 +103,12 @@ add_track = (req, user, callback)->
 					console.log err
 	user.save (err) ->
 		console.log err
-		find_friends req.body.device_id, (result)->
+		find_friends req.body.fb_id, (result)->
 			callback result
 
-find_friends = (device_id, callback)->
-	query = [{ '$match': {'device_id' : device_id}},{ $unwind: '$track' },{ $sort: {'track.time': -1}}]
+find_friends = (fb_id, callback)->
+	console.log new Date().getTime()
+	query = [{ '$match': {'fb_id' : fb_id}},{ $unwind: '$track' },{ $sort: {'track.time': -1}}]
 	db_model.User.aggregate query, {}, (err, result)->
 		if result[0]
 			geoNear = 
@@ -85,7 +123,8 @@ find_friends = (device_id, callback)->
 			db_model.User.aggregate query, {}, (err, friends)->
 				friends_array=[]
 				for friend in friends
-					if friend.device_id != device_id
+					if friend.fb_id != fb_id
+						send_push friend
 						friends_array.push friend
 				callback friends_array
 		else

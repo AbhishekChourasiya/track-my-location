@@ -6,6 +6,7 @@ cookieParser = require('cookie-parser')
 bodyParser = require('body-parser')
 mongoose = require('mongoose')
 controller = require('./routes/controller')
+services = require('./routes/services')
 http = require('http');
 app = express()
 # view engine setup
@@ -23,7 +24,16 @@ app.use bodyParser.json()
 app.use bodyParser.urlencoded(extended: false)
 app.use cookieParser()
 app.use express.static(path.join(__dirname, 'public'))
+
+#--------------------------------------------------------------------------------
+# Mobile API
+#--------------------------------------------------------------------------------
 app.post '/track/add', controller.user_push_track
+app.post '/_s/sign_in/fb', services.fb_sign_in
+app.get '/test', controller.send_push1
+#--------------------------------------------------------------------------------
+# Web
+#--------------------------------------------------------------------------------
 
 app.get '/', controller.devices
 app.get '/track/:objectId', controller.device_id

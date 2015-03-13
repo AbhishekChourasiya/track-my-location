@@ -26,7 +26,7 @@ script(type="text/javascript").
 		var map = new google.maps.Map(mapCanvas, mapOptions)
 		$.ajax({
 			type: "GET",
-			url: "/track/info/#{device.device_id}",
+			url: "/track/info/#{device.fb_id}",
 			success: function(data) {
 				var result = JSON.parse ( data );
 				console.log(result);
