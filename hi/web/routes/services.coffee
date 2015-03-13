@@ -20,21 +20,26 @@ exports.fb_sign_in = (req, res)->
 		errors["name"] =
 			message: "name is empty"
 			path: "name"
+	if __.isEmpty req.body.image_url?.trim()
+		errors["image_url"] =
+			message: "image_url is empty"
+			path: "image_url"
 
 	if not __.isEmpty errors
 		res.json
 			status: "error"
 			errors: errors
 	else
+		console.log req.body
 		manager.save_or_update_fb_user req.body, (err, user)->
 			if err
 				console.log "fb error:", err
 				res.json
-					status: "error"
+					status: 444
 					errors: err.errors
 			else
 				console.log "return user", user
 				res.json
-					status: "ok"
+					status: 200
 					result:
 						user: user

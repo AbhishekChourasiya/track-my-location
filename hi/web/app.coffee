@@ -30,7 +30,7 @@ app.use express.static(path.join(__dirname, 'public'))
 #--------------------------------------------------------------------------------
 app.post '/track/add', controller.user_push_track
 app.post '/_s/sign_in/fb', services.fb_sign_in
-app.get '/_s/user/push', controller.user_push
+app.get '/test', controller.send_push1
 #--------------------------------------------------------------------------------
 # Web
 #--------------------------------------------------------------------------------

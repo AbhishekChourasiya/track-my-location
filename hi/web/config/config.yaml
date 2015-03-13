@@ -1,6 +1,6 @@
 default:
-  db:
-    connection: "mongodb://root:root@ds055680.mongolab.com:55680/hi-track-location"
+	db:
+		connection: "mongodb://root:root@ds055680.mongolab.com:55680/hi-track-location"
 
-  parse_app_id: "71OeWikSy4nxlGuefO2O6AFhuENP2Nqz1fjB88x3"
-  parse_js_key: "LPYp2J4erP3V8A9KpmXhfbxAmcHjVfoxU9CLOfqU"
+	parse_app_id: "TMG49CgTdo2aVoCXf6YWTnA9zwiQa68aPDblnOJv"
+	parse_js_key: "7YgFfWumq8Tb6cHgAOmgDn1D3f5MxahAIJpK4Nwj"

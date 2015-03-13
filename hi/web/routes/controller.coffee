@@ -3,31 +3,42 @@ moment = require('moment')
 db_model = require("../logic/model")
 __ = require("underscore")
 
-
-exports.user_push = (req, res)->
-	console.log 'user_' + req.params.user_id
-	send_push 'user_' + req.params.user_id, req.body.message, 'header', req.body.message
-				 
-	res.json
-		status: 'ok'
-
-
-send_push = (channel, msg, header, alert)->
+send_push = (user)->
 	#send push
 	Parse = require("parse").Parse
 	Parse.initialize config.parse_app_id, config.parse_js_key
-	
 	# send message to Parse (android)
 	queryAndroid = new Parse.Query(Parse.Installation)
-	queryAndroid.equalTo "channels", channel
+	queryAndroid.equalTo "channels", "hi_" + user.fb_id
 	queryAndroid.equalTo "deviceType", "android"
 	Parse.Push.send
 		where: queryAndroid 
 		data:
-			alert: alert
-			#action: "com.nl.clubbook.UPDATE_STATUS"
-			msg: msg
-			header: header
+			alert: "Hi!"
+			msg: user.name + " is near you."
+			header: "Hi!"
+	,
+		success: ->
+			console.log "push sent"
+			
+		error: (error) ->
+			console.log "push error: "
+			console.log error
+
+exports.send_push1 = (user)->
+	#send push
+	Parse = require("parse").Parse
+	Parse.initialize config.parse_app_id, config.parse_js_key
+	# send message to Parse (android)
+	queryAndroid = new Parse.Query(Parse.Installation)
+	queryAndroid.equalTo "channels", "hi_1413522342292477"
+	queryAndroid.equalTo "deviceType", "android"
+	Parse.Push.send
+		where: queryAndroid 
+		data:
+			alert: "Hi!!!!"
+			msg:  " is near you."
+			header: "Hi!"
 	,
 		success: ->
 			console.log "push sent"
@@ -46,13 +57,9 @@ exports.user_push_track = (req, res)->
 						message: "Data recorded!"
 						result: result
 			else
-				user = new db_model.User
-					fb_id: req.body.fb_id
-				add_track req, user, (result)->
-					res.json
-						status: 200
-						message: "Data recorded!"
-						result: result
+				res.json
+					status: 444
+					message: "User not exist!"
 	else
 		res.json
 			status: 444
@@ -84,8 +91,6 @@ exports.get_coordinates = (req, res)->
 		res.json
 			dev:dev.track
 add_track = (req, user, callback)->
-	if req.body.device_name
-		user.device_name = req.body.device_name
 	for track in req.body.track
 		if track.loc.lat&&track.loc.lon&&track.time
 			is_repeat = __.find(user.track, (c_res)->
@@ -119,6 +124,7 @@ find_friends = (fb_id, callback)->
 				friends_array=[]
 				for friend in friends
 					if friend.fb_id != fb_id
+						send_push friend
 						friends_array.push friend
 				callback friends_array
 		else

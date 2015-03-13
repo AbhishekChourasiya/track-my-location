@@ -11,7 +11,8 @@ exports.save_or_update_fb_user = (params, callback)->
 		if user
 			console.log "fb_login:", "update user"
 			user.gender = params.gender
-			user.name = params.name      
+			user.name = params.name   
+			user.image_url = params.image_url   
 			user.save (err) ->
 				console.log err
 				callback err, user
@@ -21,6 +22,7 @@ exports.save_or_update_fb_user = (params, callback)->
 				gender: params.gender
 				name: params.name
 				fb_id: params.fb_id
+				image_url: params.image_url 
 			user.save (err) ->
 				console.log err
 				callback err, user
