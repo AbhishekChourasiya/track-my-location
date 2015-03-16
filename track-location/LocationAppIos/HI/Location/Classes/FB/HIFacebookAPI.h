@@ -16,12 +16,21 @@
 @end
 
 @interface HIFacebookAPI : NSObject
-+ (id)api;
++ (HIFacebookAPI *)api;
 
 + (BOOL)openActiveSessionWithReadPermissions:(NSArray *)readPermissions
                                 allowLoginUI:(BOOL)allowLoginUI
                            completionHandler:(FBSessionStateHandler)handler;
 - (void)sessionStateChanged:(FBSession *)session state:(FBSessionState) state error:(NSError *)error;
 - (void)checkSession;
+- (void)subscribeToPushNotifications;
+
 @property (nonatomic, strong) id <HIFacebookDelegate>delegate;
+@property (nonatomic) BOOL logged;
+
+//account info
+@property (nonatomic, readonly) NSString *fbId;
+@property (nonatomic, readonly) NSString *name;
+@property (nonatomic, readonly) NSString *gender;
+@property (nonatomic, readonly) NSString *imageURL;
 @end

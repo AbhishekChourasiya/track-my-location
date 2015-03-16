@@ -10,7 +10,7 @@
 
 @implementation HIFacebookAPI
 
-+ (id)api {
++ (HIFacebookAPI *)api {
     static HIFacebookAPI *sharedMyModel = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
@@ -35,15 +35,19 @@
     if (!error && state == FBSessionStateOpen){
         NSLog(@"Session opened");
         
-        [FBRequestConnection startWithGraphPath:@"me" parameters:[NSMutableDictionary dictionaryWithObjectsAndKeys:@"id,name,first_name,last_name,email,picture",@"fields",nil] HTTPMethod:@"GET" completionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
+        [FBRequestConnection startWithGraphPath:@"me" parameters:[NSMutableDictionary dictionaryWithObjectsAndKeys:@"id,name,first_name,last_name, gender, email,picture",@"fields",nil] HTTPMethod:@"GET" completionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
             NSDictionary *userData = (NSDictionary *)result;
             NSLog(@"%@",[userData description]);
             
-            // [SVProgressHUD dismiss];
+            _fbId = userData[@"id"];
+            _gender = userData[@"gender"];
+            _name = [NSString stringWithFormat:@"%@ %@", userData[@"first_name"], userData[@"last_name"]];
+            _imageURL = [NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?type=large", _fbId];
+            [self subscribeToPushNotifications];
+            [self userLoggedIn];
         }];
         
-        // Show the user the logged-in UI
-        [self userLoggedIn];
+        
         return;
     }
     if (state == FBSessionStateClosed || state == FBSessionStateClosedLoginFailed){
@@ -102,7 +106,17 @@
         }];
     }
     else if(FBSession.activeSession.state == FBSessionStateOpen) {
-        [self userLoggedIn];
+        [FBRequestConnection startWithGraphPath:@"me" parameters:[NSMutableDictionary dictionaryWithObjectsAndKeys:@"id,name,first_name,last_name, gender, email,picture",@"fields",nil] HTTPMethod:@"GET" completionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
+            NSDictionary *userData = (NSDictionary *)result;
+            NSLog(@"%@",[userData description]);
+            
+            _fbId = userData[@"id"];
+            _gender = userData[@"gender"];
+            _name = [NSString stringWithFormat:@"%@ %@", userData[@"first_name"], userData[@"last_name"]];
+            _imageURL = [NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?type=large", _fbId];
+            [self subscribeToPushNotifications];
+            [self userLoggedIn];
+        }];
     }
     
     else if (FBSession.activeSession.state == FBSessionStateClosed || FBSession.activeSession.state == FBSessionStateClosedLoginFailed) {
@@ -127,6 +141,26 @@
 - (void)showMessage:(NSString *)alertText withTitle:(NSString *)alertTitle {
     if(self.delegate)
         [self.delegate showMessage:alertText withTitle:alertTitle];
+}
+
+#pragma mark parse puch notifications
+
+- (void)subscribeToPushNotifications {
+    UIApplication *application = [UIApplication sharedApplication];
+    
+    if ([application respondsToSelector:@selector(isRegisteredForRemoteNotifications)])
+    {
+        // iOS 8 Notifications
+        [application registerUserNotificationSettings:[UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeBadge) categories:nil]];
+        
+        [application registerForRemoteNotifications];
+    }
+    else
+    {
+        // iOS < 8 Notifications
+        [application registerForRemoteNotificationTypes:
+         (UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeAlert | UIRemoteNotificationTypeSound)];
+    }
 }
 
 

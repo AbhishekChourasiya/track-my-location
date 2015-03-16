@@ -8,6 +8,7 @@
 
 #import "HIServiceAPI.h"
 #import "HIDeviceInfo.h"
+#import "HIFacebookAPI.h"
 
 @implementation HIServiceAPI
 
@@ -28,7 +29,7 @@
     
     NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
     NSURLSession *session = [NSURLSession sessionWithConfiguration:configuration delegate:self delegateQueue:nil];
-    NSURL *url = [NSURL URLWithString:@"http://track-my-location.herokuapp.com/track/add"];
+    NSURL *url = [NSURL URLWithString:@"http://hi-track-location.herokuapp.com/track/add"];
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url
                                                            cachePolicy:NSURLRequestUseProtocolCachePolicy
                                                        timeoutInterval:60.0];
@@ -62,6 +63,43 @@
     
     [postDataTask resume];
     
+}
+
+- (void)signIn {
+    NSError *error;
+    
+    NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
+    NSURLSession *session = [NSURLSession sessionWithConfiguration:configuration delegate:self delegateQueue:nil];
+    NSURL *url = [NSURL URLWithString:@"http://hi-track-location.herokuapp.com/_s/sign_in/fb"];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url
+                                                           cachePolicy:NSURLRequestUseProtocolCachePolicy
+                                                       timeoutInterval:60.0];
+    
+    [request addValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+    [request addValue:@"application/json" forHTTPHeaderField:@"Accept"];
+    
+    [request setHTTPMethod:@"POST"];
+    
+    HIFacebookAPI *api = [HIFacebookAPI api];
+    NSString *fbId = api.fbId;
+    NSString *name = api.name;
+    NSString *gender = api.gender;
+    NSString *imageURL = api.imageURL;
+    
+    NSDictionary *mapData = [[NSDictionary alloc] initWithObjectsAndKeys: fbId, @"fb_id",
+                             name, @"name", gender, @"gender", imageURL, @"image_url",
+                             nil];
+    NSData *postData = [NSJSONSerialization dataWithJSONObject:mapData options:0 error:&error];
+    [request setHTTPBody:postData];
+    
+    
+    NSURLSessionDataTask *postDataTask = [session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+        NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse*) response;
+        NSLog(@"%@",httpResponse.description);
+    }];
+    
+    [postDataTask resume];
+
 }
 
 
