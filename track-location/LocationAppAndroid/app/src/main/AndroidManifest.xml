@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="co.techmagic.hi">
+    package="co.techmagic.hi" >
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
     <application
         android:name="com.techmagic.locationapp.TrackLocationApplication"
@@ -26,8 +26,13 @@
         </activity>
         <activity
             android:name="com.techmagic.locationapp.map.MapResultsActivity"
-            android:label="@string/title_activity_results"
-            android:configChanges="keyboardHidden|orientation|screenSize">
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="@string/title_activity_results" >
+        </activity>
+
+        <activity
+            android:name="com.techmagic.locationapp.TrackGeoFenceActivity"
+            android:label="@string/title_activity_track_geo_fence" >
         </activity>
 
         <service
@@ -35,6 +40,7 @@
             android:enabled="true"
             android:exported="false" >
         </service>
+        <service android:name="com.techmagic.locationapp.TrackGeofenceService" />
 
         <receiver android:name="com.techmagic.locationapp.TrackLocationSyncReceiver"/>
 
