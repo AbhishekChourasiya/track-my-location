@@ -13,4 +13,5 @@
 
 + (id)api;
 - (void)sendCoordinate:(CLLocationCoordinate2D)coordinate;
+- (void)signIn;
 @end
