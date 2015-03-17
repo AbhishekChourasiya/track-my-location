@@ -5,9 +5,13 @@ import android.net.Uri;
 
 import com.activeandroid.query.Delete;
 import com.activeandroid.query.Select;
+import com.google.android.gms.maps.model.LatLng;
+import com.techmagic.locationapp.data.model.GeoPoint;
 import com.techmagic.locationapp.data.model.LocationData;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class DataHelper {
 
@@ -80,6 +84,19 @@ public class DataHelper {
 
     public void deleteAllLocations() {
         new Delete().from(LocationData.class).execute();
+    }
+
+    public void saveGeoPoint(GeoPoint geoPoint) {
+        geoPoint.save();
+    }
+
+    public List<GeoPoint> getAllGeoPoints() {
+        List<GeoPoint> points = new Select().from(GeoPoint.class).execute();
+        return points;
+    }
+
+    public void deleteAllGeoPoints() {
+        new Delete().from(GeoPoint.class).execute();
     }
 
     private void notifyChanged(Uri uri) {

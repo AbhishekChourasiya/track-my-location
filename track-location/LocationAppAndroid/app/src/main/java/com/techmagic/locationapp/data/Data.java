@@ -13,6 +13,17 @@ public class Data {
         public static final String COLUMN_LATITUDE = "COLUMN_LATITUDE";
         public static final String COLUMN_LONGITUDE = "COLUMN_LONGITUDE";
         public static final String COLUMN_TIMESTAMP = "COLUMN_TIMESTAMP";
-        public static final String COLUMN_SYNCED = "COLUMN_SYNCED";}
+        public static final String COLUMN_SYNCED = "COLUMN_SYNCED";
+    }
+
+    public static final class GeoPoint {
+        public static final String TABLE = "GeoPoint";
+        public static final Uri URI = Uri.withAppendedPath(URI_MAIN, TABLE);
+
+        public static final String COLUMN_NAME = "COLUMN_NAME";
+        public static final String COLUMN_LATITUDE = "COLUMN_LATITUDE";
+        public static final String COLUMN_LONGITUDE = "COLUMN_LONGITUDE";
+        public static final String COLUMN_RADIUS = "COLUMN_RADIUS";
+    }
 
 }

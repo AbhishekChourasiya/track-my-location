@@ -6,6 +6,7 @@ import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +16,8 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.techmagic.locationapp.activity.AddGeoPointActivity;
+import com.techmagic.locationapp.data.model.GeoPoint;
 
 import butterknife.ButterKnife;
 import co.techmagic.hi.R;
@@ -35,8 +38,10 @@ public class AddGeoPointDialogFragment extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_add_geo_point, null);
-        EditText etName = ButterKnife.findById(view, R.id.et_geo_name);
+        final EditText etName = ButterKnife.findById(view, R.id.et_geo_name);
         final TextView tvMeters = ButterKnife.findById(view, R.id.tv_meters);
+        Button btnAdd = ButterKnife.findById(view, R.id.btn_add);
+        Button btnCancel = ButterKnife.findById(view, R.id.btn_cancel);
         etName.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
@@ -45,11 +50,11 @@ public class AddGeoPointDialogFragment extends DialogFragment {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-                Button btnSubmit = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+                Button btnAdd = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
                 if (charSequence.length() == 0) {
-                    btnSubmit.setEnabled(false);
+                    btnAdd.setEnabled(false);
                 } else {
-                    btnSubmit.setEnabled(true);
+                    btnAdd.setEnabled(true);
                 }
             }
 
@@ -58,8 +63,8 @@ public class AddGeoPointDialogFragment extends DialogFragment {
 
             }
         });
-        SeekBar seekBar = ButterKnife.findById(view, R.id.seek_bar);
-        seekBar.setMax(5000);
+        final SeekBar seekBar = ButterKnife.findById(view, R.id.seek_bar);
+        seekBar.setMax(1000);
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -76,24 +81,37 @@ public class AddGeoPointDialogFragment extends DialogFragment {
 
             }
         });
-        seekBar.setProgress(1000);
+        seekBar.setProgress(100);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("Add Geo Fence");
         builder.setView(view);
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-            }
-        });
-        builder.setPositiveButton("Add", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-            }
-        });
         dialog = builder.create();
+
+        btnAdd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AddGeoPointActivity activity = (AddGeoPointActivity) getActivity();
+                String name = etName.getText().toString();
+                if (TextUtils.isEmpty(name)) {
+                    etName.setError("Name cannot be empty");
+                } else if (activity.nameExists(name)) {
+                    etName.setError("This name already exists");
+                } else {
+                    int radius = seekBar.getProgress();
+                    LatLng latLng = getArguments().getParcelable(KEY_LAT_LNG);
+                    GeoPoint geoPoint = GeoPoint.getInstance(name, latLng.latitude, latLng.longitude, radius);
+                    activity.addGeoPoint(geoPoint);
+                    dismiss();
+                }
+            }
+        });
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dismiss();
+            }
+        });
         return dialog;
     }
 

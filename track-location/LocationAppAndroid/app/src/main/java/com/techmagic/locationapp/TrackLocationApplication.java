@@ -10,6 +10,8 @@ import com.activeandroid.ActiveAndroid;
 import com.activeandroid.Configuration;
 import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.location.LocationRequest;
+import com.techmagic.locationapp.data.Data;
+import com.techmagic.locationapp.data.model.GeoPoint;
 import com.techmagic.locationapp.data.model.LocationData;
 import com.techmagic.locationapp.webclient.model.TrackLocationRequest;
 
@@ -97,6 +99,7 @@ public class TrackLocationApplication extends Application {
     private void initializeDB() {
         Configuration.Builder configurationBuilder = new Configuration.Builder(this);
         configurationBuilder.addModelClasses(LocationData.class);
+        configurationBuilder.addModelClasses(GeoPoint.class);
         ActiveAndroid.initialize(configurationBuilder.create());
     }
 

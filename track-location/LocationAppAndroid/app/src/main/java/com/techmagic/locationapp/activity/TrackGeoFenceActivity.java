@@ -21,8 +21,10 @@ import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
+import com.techmagic.locationapp.BaseActivity;
 import com.techmagic.locationapp.TrackGeofenceService;
 import com.techmagic.locationapp.TrackLocationApplication;
+import com.techmagic.locationapp.data.model.GeoPoint;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,7 +38,7 @@ import co.techmagic.hi.R;
 
 
 
-public class TrackGeoFenceActivity extends ActionBarActivity implements GoogleApiClient.ConnectionCallbacks,
+public class TrackGeoFenceActivity extends BaseActivity implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, ResultCallback<Status> {
 
     private static final String TAG = MainActivity.class.getCanonicalName();
@@ -46,7 +48,6 @@ public class TrackGeoFenceActivity extends ActionBarActivity implements GoogleAp
 
     private PendingIntent geofencePendingIntent;
     private GoogleApiClient googleApiClient ;
-    private TrackLocationApplication app;
 
     @InjectView(R.id.btn_toggle_tracking)
     Button btnToggleTracking;
@@ -56,8 +57,6 @@ public class TrackGeoFenceActivity extends ActionBarActivity implements GoogleAp
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_track_geo_fence);
         ButterKnife.inject(this);
-
-        app = (TrackLocationApplication) getApplication();
     }
 
     @Override
@@ -137,30 +136,27 @@ public class TrackGeoFenceActivity extends ActionBarActivity implements GoogleAp
     }
 
     private GeofencingRequest getGeofencingRequest() {
-        Map<String, LatLng> geoFencesData = new HashMap();
-        geoFencesData.put("office", new LatLng(49.8475878, 24.027228));
-        geoFencesData.put("home", new LatLng(49.8528522, 24.0063389));
-        List<Geofence> mGeofenceList = new ArrayList<>();
-
-        for (Map.Entry<String, LatLng> entry : geoFencesData.entrySet()) {
-            Geofence geofence = new Geofence.Builder()
-                .setRequestId(entry.getKey())
-
-                .setCircularRegion(
-                        entry.getValue().latitude,
-                        entry.getValue().longitude,
-                        AREA_RADIUS
-                )
-                .setExpirationDuration(TRACKING_DURATION)
-                .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER |
-                        Geofence.GEOFENCE_TRANSITION_EXIT)
-                    .build();
-            mGeofenceList.add(geofence);
+        List<GeoPoint> geoPoints = dataHelper.getAllGeoPoints();
+        List<Geofence> geofences = new ArrayList<>();
+        if (geoPoints != null) {
+            for (GeoPoint p : geoPoints) {
+                Geofence geofence = new Geofence.Builder()
+                        .setRequestId(p.getName())
+                        .setCircularRegion(
+                                p.getLatitude(),
+                                p.getLongitude(),
+                                AREA_RADIUS
+                        )
+                        .setExpirationDuration(TRACKING_DURATION)
+                        .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER |
+                                Geofence.GEOFENCE_TRANSITION_EXIT)
+                        .build();
+                geofences.add(geofence);
+            }
         }
-
         GeofencingRequest.Builder builder = new GeofencingRequest.Builder();
         builder.setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER);
-        builder.addGeofences(mGeofenceList);
+        builder.addGeofences(geofences);
         return builder.build();
     }
 
@@ -185,10 +181,9 @@ public class TrackGeoFenceActivity extends ActionBarActivity implements GoogleAp
     }
 
     private void stopTrackingGeofences() {
-        if (googleApiClient != null && !googleApiClient.isConnected()) {
+        if (googleApiClient == null || !googleApiClient.isConnected()) {
             return;
         }
-
         LocationServices.GeofencingApi.removeGeofences(
                 googleApiClient,
                 getGeofencePendingIntent()
