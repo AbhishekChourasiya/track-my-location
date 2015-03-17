@@ -14,6 +14,7 @@ import android.util.Log;
 
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingEvent;
+import com.techmagic.locationapp.activity.MainActivity;
 
 import java.util.ArrayList;
 import java.util.List;

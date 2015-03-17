@@ -1,12 +1,12 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.techmagic.locationapp.activity.MapResultsActivity">
+    tools:context="com.techmagic.locationapp.activity.AddGeoPointActivity">
 
-    <item android:id="@+id/action_filter"
-        android:title="@string/action_filter"
+    <item android:id="@+id/action_add_geo_fence"
+        android:title="@string/action_add_geo_fence"
         android:orderInCategory="100"
-        android:icon="@drawable/ic_filter"
+        android:icon="@android:drawable/ic_menu_add"
         app:showAsAction="always" />
 
 </menu>

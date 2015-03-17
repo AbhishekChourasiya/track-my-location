@@ -1,4 +1,4 @@
-package com.techmagic.locationapp;
+package com.techmagic.locationapp.activity;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.IntentSender;
 import android.database.ContentObserver;
 import android.os.Handler;
-import android.preference.Preference;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.text.Editable;
@@ -27,11 +26,16 @@ import com.google.android.gms.common.ErrorDialogFragment;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
+import com.techmagic.locationapp.LocationRequestData;
+import com.techmagic.locationapp.TrackLocationApplication;
+import com.techmagic.locationapp.TrackLocationPreferencesManager;
+import com.techmagic.locationapp.TrackLocationService;
+import com.techmagic.locationapp.Utils;
 import com.techmagic.locationapp.data.Data;
 import com.techmagic.locationapp.data.DataHelper;
 import com.techmagic.locationapp.data.model.LocationData;
 import com.techmagic.locationapp.event.AppEvent;
-import com.techmagic.locationapp.map.MapResultsActivity;
+
 import co.techmagic.hi.R;
 
 import butterknife.ButterKnife;

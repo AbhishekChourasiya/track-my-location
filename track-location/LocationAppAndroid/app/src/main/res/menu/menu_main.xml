@@ -1,7 +1,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.techmagic.locationapp.map.MapResultsActivity">
+    tools:context="com.techmagic.locationapp.activity.MapResultsActivity">
 
     <item android:id="@+id/action_map_markers"
         android:title="@string/action_map"
