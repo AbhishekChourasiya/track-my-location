@@ -18,5 +18,6 @@
     <string name="one_day">24 hours</string>
     <string name="one_hour">1 hour</string>
     <string name="title_activity_maps">Map</string>
+    <string name="title_activity_track_geo_fence">Track Geo Fence</string>
 
 </resources>

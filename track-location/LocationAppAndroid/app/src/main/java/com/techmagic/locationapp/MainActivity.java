@@ -169,6 +169,12 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
         }
     }
 
+    @OnClick(R.id.btn_geofence)
+    public void geofence() {
+        Intent i = new Intent(this, TrackGeoFenceActivity.class);
+        startActivity(i);
+    }
+
     @OnClick(R.id.btn_clear_data)
     public void clearData() {
         DataHelper.getInstance(getApplicationContext()).deleteAllLocations();

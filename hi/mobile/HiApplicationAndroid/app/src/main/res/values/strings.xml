@@ -1,5 +1,13 @@
 <resources>
 
     <string name="app_name">Hi</string>
+    <string name="btn_start_tracking">Start tracking</string>
+    <string name="btn_stop_tracking">Stop tracking</string>
+    <string name="title_activity_hi_friends">Friends Say Hi</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_logout">Logout</string>
+    <string name="action_toggle_tracking">Toggle tracking</string>
 
 </resources>

@@ -83,6 +83,14 @@
             android:layout_margin="4dp"
             android:text="Last update time" />
 
+        <Button
+            android:id="@+id/btn_geofence"
+            style="@style/TextAppearance.AppCompat.Title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:text="GeoFencing"/>
+
     </LinearLayout>
 
 </ScrollView>
