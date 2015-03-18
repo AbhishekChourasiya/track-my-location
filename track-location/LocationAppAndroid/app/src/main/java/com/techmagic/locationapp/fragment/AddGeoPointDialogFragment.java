@@ -2,9 +2,8 @@ package com.techmagic.locationapp.fragment;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.DialogFragment;
-import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -16,7 +15,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.model.LatLng;
-import com.techmagic.locationapp.activity.AddGeoPointActivity;
+import com.techmagic.locationapp.activity.TrackGeoFenceActivity;
 import com.techmagic.locationapp.data.model.GeoPoint;
 
 import butterknife.ButterKnife;
@@ -91,7 +90,7 @@ public class AddGeoPointDialogFragment extends DialogFragment {
         btnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AddGeoPointActivity activity = (AddGeoPointActivity) getActivity();
+                TrackGeoFenceActivity activity = (TrackGeoFenceActivity) getActivity();
                 String name = etName.getText().toString();
                 if (TextUtils.isEmpty(name)) {
                     etName.setError("Name cannot be empty");

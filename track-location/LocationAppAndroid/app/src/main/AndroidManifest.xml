@@ -59,10 +59,6 @@
             android:name="com.crashlytics.ApiKey"
             android:value="99e17ce5825d67896ac723bf9fab7a2556293701" />
 
-        <activity
-            android:name="com.techmagic.locationapp.activity.AddGeoPointActivity"
-            android:label="@string/title_activity_add_geo_point" >
-        </activity>
     </application>
 
 </manifest>

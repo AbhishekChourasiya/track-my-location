@@ -5,11 +5,12 @@ import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.ErrorDialogFragment;
@@ -20,16 +21,14 @@ import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingRequest;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.model.LatLng;
 import com.techmagic.locationapp.BaseActivity;
 import com.techmagic.locationapp.TrackGeofenceService;
-import com.techmagic.locationapp.TrackLocationApplication;
 import com.techmagic.locationapp.data.model.GeoPoint;
+import com.techmagic.locationapp.fragment.AddGeoPointMapFragment;
+import com.techmagic.locationapp.fragment.TrackGeoFenceFragment;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -48,21 +47,14 @@ public class TrackGeoFenceActivity extends BaseActivity implements GoogleApiClie
 
     private PendingIntent geofencePendingIntent;
     private GoogleApiClient googleApiClient ;
-
-    @InjectView(R.id.btn_toggle_tracking)
-    Button btnToggleTracking;
+    private AddGeoPointMapFragment addGeoPointFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_track_geo_fence);
-        ButterKnife.inject(this);
-    }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        refreshUI();
+        addTrackGeoFenceFragment();
     }
 
     @Override
@@ -75,8 +67,7 @@ public class TrackGeoFenceActivity extends BaseActivity implements GoogleApiClie
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_add_geo_fence) {
-            Intent i = new Intent(this, AddGeoPointActivity.class);
-            startActivity(i);
+            addAddGeoPointFragment();
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -125,20 +116,25 @@ public class TrackGeoFenceActivity extends BaseActivity implements GoogleApiClie
         }
     }
 
-    @OnClick(R.id.btn_toggle_tracking)
-    public void startTracking() {
-        connectGoogleApiClient();
+    private void addAddGeoPointFragment() {
+        addGeoPointFragment = AddGeoPointMapFragment.newInstance();
+        getSupportFragmentManager().beginTransaction()
+                .add(android.R.id.content, addGeoPointFragment)
+                .addToBackStack("addGeoPointFragment")
+                .commit();
     }
 
-    @OnClick(R.id.btn_stop_tracking)
-    public void stopTracking() {
-        stopTrackingGeofences();
+    private void addTrackGeoFenceFragment() {
+        Fragment trackFragment = new TrackGeoFenceFragment();
+        getSupportFragmentManager().beginTransaction()
+                .add(android.R.id.content, trackFragment)
+                .commit();
     }
 
     private GeofencingRequest getGeofencingRequest() {
         List<GeoPoint> geoPoints = dataHelper.getAllGeoPoints();
         List<Geofence> geofences = new ArrayList<>();
-        if (geoPoints != null) {
+        if (geoPoints != null && geoPoints.size() > 0) {
             for (GeoPoint p : geoPoints) {
                 Geofence geofence = new Geofence.Builder()
                         .setRequestId(p.getName())
@@ -153,11 +149,12 @@ public class TrackGeoFenceActivity extends BaseActivity implements GoogleApiClie
                         .build();
                 geofences.add(geofence);
             }
+            GeofencingRequest.Builder builder = new GeofencingRequest.Builder();
+            builder.setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER);
+            builder.addGeofences(geofences);
+            return builder.build();
         }
-        GeofencingRequest.Builder builder = new GeofencingRequest.Builder();
-        builder.setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER);
-        builder.addGeofences(geofences);
-        return builder.build();
+        return null;
     }
 
     private PendingIntent getGeofencePendingIntent() {
@@ -169,10 +166,15 @@ public class TrackGeoFenceActivity extends BaseActivity implements GoogleApiClie
     }
 
     private void startTrackingGeofences() {
+        GeofencingRequest request = getGeofencingRequest();
+        if (request == null) {
+            Toast.makeText(this, "No geo fence chosen to track", Toast.LENGTH_SHORT).show();
+            return;
+        }
         try {
             LocationServices.GeofencingApi.addGeofences(
                     googleApiClient,
-                    getGeofencingRequest(),
+                    request,
                     getGeofencePendingIntent()
             ).setResultCallback(this);
         } catch (SecurityException securityException) {
@@ -180,7 +182,7 @@ public class TrackGeoFenceActivity extends BaseActivity implements GoogleApiClie
         }
     }
 
-    private void stopTrackingGeofences() {
+    public void stopTrackingGeofences() {
         if (googleApiClient == null || !googleApiClient.isConnected()) {
             return;
         }
@@ -188,15 +190,6 @@ public class TrackGeoFenceActivity extends BaseActivity implements GoogleApiClie
                 googleApiClient,
                 getGeofencePendingIntent()
         ).setResultCallback(this);
-    }
-
-    private void refreshUI() {
-        //TODO
-//        if (TrackLocationService.isServiceRunning()) {
-//            btnToggleTracking.setText(R.string.btn_stop_tracking);
-//        } else {
-//            btnToggleTracking.setText(R.string.btn_start_tracking);
-//        }
     }
 
     private int createGoogleApiClient() {
@@ -219,7 +212,7 @@ public class TrackGeoFenceActivity extends BaseActivity implements GoogleApiClie
         return status;
     }
 
-    private void connectGoogleApiClient() {
+    public void connectGoogleApiClient() {
         if (googleApiClient == null) {
             if (createGoogleApiClient() != ConnectionResult.SUCCESS) {
                 return;
@@ -243,6 +236,20 @@ public class TrackGeoFenceActivity extends BaseActivity implements GoogleApiClie
         args.putInt("dialog_error", errorCode);
         dialogFragment.setArguments(args);
         dialogFragment.show(getFragmentManager(), "errordialog");
+    }
+
+    public void addGeoPoint(GeoPoint geoPoint) {
+        dataHelper.saveGeoPoint(geoPoint);
+        if (addGeoPointFragment != null) {
+            addGeoPointFragment.refreshGeoPointsMap();
+        }
+    }
+
+    public boolean nameExists(String name) {
+        if (addGeoPointFragment != null) {
+            return addGeoPointFragment.nameExists(name);
+        }
+        return false;
     }
 
 }

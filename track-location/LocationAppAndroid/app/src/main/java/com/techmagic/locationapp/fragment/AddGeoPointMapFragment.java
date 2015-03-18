@@ -1,19 +1,23 @@
-package com.techmagic.locationapp.activity;
+package com.techmagic.locationapp.fragment;
 
-import android.app.DialogFragment;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.techmagic.locationapp.BaseActivity;
+import com.techmagic.locationapp.data.DataHelper;
 import com.techmagic.locationapp.data.model.GeoPoint;
-import com.techmagic.locationapp.fragment.AddGeoPointDialogFragment;
 
 import java.util.HashMap;
 import java.util.List;
@@ -23,27 +27,52 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import co.techmagic.hi.R;
 
-public class AddGeoPointActivity extends BaseActivity {
+public class AddGeoPointMapFragment extends Fragment {
 
     private static final int ZOOM_LEVEL = 15;
 
     private MapFragment mapFragment;
     private Map<String, GeoPoint> geoPointsMap;
+    private DataHelper dataHelper;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_geo_point);
-        ButterKnife.inject(this);
+    public static AddGeoPointMapFragment newInstance() {
+        AddGeoPointMapFragment fragment = new AddGeoPointMapFragment();
+        Bundle args = new Bundle();
+        fragment.setArguments(args);
+        return fragment;
+    }
 
-        mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map);
-        setupMap();
+    public AddGeoPointMapFragment() {
+        // Required empty public constructor
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        dataHelper = DataHelper.getInstance(getActivity().getApplicationContext());
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_add_geopoint, null);
+        ButterKnife.inject(this, view);
+
+        mapFragment = (MapFragment) getActivity().getFragmentManager().findFragmentById(R.id.map);
+        setupMap();
         refreshGeoPointsMap();
+
+        return view;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (mapFragment != null){
+            getActivity().getFragmentManager().beginTransaction()
+                    .remove(mapFragment)
+                    .commit();
+        }
     }
 
     @OnClick(R.id.btb_clear_geo_points)
@@ -52,18 +81,9 @@ public class AddGeoPointActivity extends BaseActivity {
         refreshGeoPointsMap();
     }
 
-    public void addGeoPoint(GeoPoint geoPoint) {
-        dataHelper.saveGeoPoint(geoPoint);
-        refreshGeoPointsMap();
-    }
-
-    public boolean nameExists(String name) {
-        return geoPointsMap.containsKey(name);
-    }
-
     private void setupMap() {
         GoogleMap map = mapFragment.getMap();
-
+        map.setMyLocationEnabled(true);
         map.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
             @Override
             public void onMapLongClick(LatLng latLng) {
@@ -72,7 +92,7 @@ public class AddGeoPointActivity extends BaseActivity {
         });
     }
 
-    private void refreshGeoPointsMap() {
+    public void refreshGeoPointsMap() {
         List<GeoPoint> geoPointsList = dataHelper.getAllGeoPoints();
         geoPointsMap = new HashMap<>();
         if (geoPointsList != null) {
@@ -87,7 +107,7 @@ public class AddGeoPointActivity extends BaseActivity {
         mapFragment.getMap().clear();
 
         if (geoPointsList == null || !(geoPointsList.size() > 0)) {
-            Toast.makeText(this, "No points to display", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "No points to display", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -112,7 +132,11 @@ public class AddGeoPointActivity extends BaseActivity {
 
     private void showAddPointDialog(LatLng latLng) {
         DialogFragment fragment = AddGeoPointDialogFragment.getInstance(latLng);
-        fragment.show(getFragmentManager(), null);
+        fragment.show(getActivity().getSupportFragmentManager(), null);
+    }
+
+    public boolean nameExists(String name) {
+        return geoPointsMap.containsKey(name);
     }
 
 }
