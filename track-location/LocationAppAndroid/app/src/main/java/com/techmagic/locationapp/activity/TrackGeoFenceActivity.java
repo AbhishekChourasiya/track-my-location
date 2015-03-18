@@ -5,11 +5,9 @@ import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Button;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -24,15 +22,11 @@ import com.google.android.gms.location.LocationServices;
 import com.techmagic.locationapp.BaseActivity;
 import com.techmagic.locationapp.TrackGeofenceService;
 import com.techmagic.locationapp.data.model.GeoPoint;
-import com.techmagic.locationapp.fragment.AddGeoPointMapFragment;
-import com.techmagic.locationapp.fragment.TrackGeoFenceFragment;
+import com.techmagic.locationapp.fragment.GeoFenceMapFragment;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-import butterknife.OnClick;
 import co.techmagic.hi.R;
 
 
@@ -47,30 +41,14 @@ public class TrackGeoFenceActivity extends BaseActivity implements GoogleApiClie
 
     private PendingIntent geofencePendingIntent;
     private GoogleApiClient googleApiClient ;
-    private AddGeoPointMapFragment addGeoPointFragment;
+    private GeoFenceMapFragment geoFenceMapFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_track_geo_fence);
 
-        addTrackGeoFenceFragment();
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_track_geo_fence, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.action_add_geo_fence) {
-            addAddGeoPointFragment();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
+        addGeoFenceMapFragment();
     }
 
     @Override
@@ -116,18 +94,10 @@ public class TrackGeoFenceActivity extends BaseActivity implements GoogleApiClie
         }
     }
 
-    private void addAddGeoPointFragment() {
-        addGeoPointFragment = AddGeoPointMapFragment.newInstance();
+    private void addGeoFenceMapFragment() {
+        geoFenceMapFragment = GeoFenceMapFragment.newInstance();
         getSupportFragmentManager().beginTransaction()
-                .add(android.R.id.content, addGeoPointFragment)
-                .addToBackStack("addGeoPointFragment")
-                .commit();
-    }
-
-    private void addTrackGeoFenceFragment() {
-        Fragment trackFragment = new TrackGeoFenceFragment();
-        getSupportFragmentManager().beginTransaction()
-                .add(android.R.id.content, trackFragment)
+                .add(android.R.id.content, geoFenceMapFragment)
                 .commit();
     }
 
@@ -240,14 +210,14 @@ public class TrackGeoFenceActivity extends BaseActivity implements GoogleApiClie
 
     public void addGeoPoint(GeoPoint geoPoint) {
         dataHelper.saveGeoPoint(geoPoint);
-        if (addGeoPointFragment != null) {
-            addGeoPointFragment.refreshGeoPointsMap();
+        if (geoFenceMapFragment != null) {
+            geoFenceMapFragment.refreshGeoPointsMap();
         }
     }
 
     public boolean nameExists(String name) {
-        if (addGeoPointFragment != null) {
-            return addGeoPointFragment.nameExists(name);
+        if (geoFenceMapFragment != null) {
+            return geoFenceMapFragment.nameExists(name);
         }
         return false;
     }

@@ -36,7 +36,7 @@ public class AddGeoPointDialogFragment extends DialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        View view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_add_geo_point, null);
+        View view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_add_geo_point_dialog, null);
         final EditText etName = ButterKnife.findById(view, R.id.et_geo_name);
         final TextView tvMeters = ButterKnife.findById(view, R.id.tv_meters);
         Button btnAdd = ButterKnife.findById(view, R.id.btn_add);
