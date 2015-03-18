@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.IntentSender;
 import android.database.ContentObserver;
 import android.os.Handler;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -44,10 +43,10 @@ import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
 
 
-public class MainActivity extends ActionBarActivity implements GoogleApiClient.ConnectionCallbacks,
+public class TrackLocationActivity extends BaseActivity implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
 
-    private static final String TAG = MainActivity.class.getCanonicalName();
+    private static final String TAG = TrackLocationActivity.class.getCanonicalName();
     private static final int REQUEST_RESOLVE_ERROR = 9999;
     private GoogleApiClient googleApiClient ;
     private TrackLocationApplication app;
@@ -181,7 +180,7 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
 
     @OnClick(R.id.btn_clear_data)
     public void clearData() {
-        DataHelper.getInstance(getApplicationContext()).deleteAllLocations();
+        dataHelper.deleteAllLocations();
     }
 
     private void stopTracking() {
@@ -205,7 +204,6 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
     }
 
     private void refreshUI() {
-        DataHelper dataHelper = DataHelper.getInstance(this);
         LocationData location = dataHelper.getLastLocation();
         if (location != null) {
             String time = Utils.formatTime(location.getTimestamp());

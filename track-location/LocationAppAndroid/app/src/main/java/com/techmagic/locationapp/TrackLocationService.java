@@ -20,7 +20,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-import com.techmagic.locationapp.activity.MainActivity;
+import com.techmagic.locationapp.activity.TrackLocationActivity;
 import com.techmagic.locationapp.data.DataHelper;
 import com.techmagic.locationapp.data.model.LocationData;
 import com.techmagic.locationapp.event.AppEvent;
@@ -46,6 +46,7 @@ public class TrackLocationService extends Service implements GoogleApiClient.Con
     private GoogleApiClient googleApiClient;
 
     private TrackLocationApplication app;
+    private DataHelper dataHelper;
 
     public static boolean isServiceRunning() {
         return isServiceRunning;
@@ -65,6 +66,7 @@ public class TrackLocationService extends Service implements GoogleApiClient.Con
         Log.d(TAG, "onCreate");
 
         app = (TrackLocationApplication) getApplication();
+        dataHelper = DataHelper.getInstance(getApplicationContext());
     }
 
     @Override
@@ -186,7 +188,7 @@ public class TrackLocationService extends Service implements GoogleApiClient.Con
 
         String timeText = Utils.formatTime(System.currentTimeMillis());
 
-        DataHelper.getInstance(this).saveLocation(LocationData.getInstance(latitude, longitude));
+        dataHelper.saveLocation(LocationData.getInstance(latitude, longitude));
         updateNotification(timeText);
     }
 
@@ -197,10 +199,10 @@ public class TrackLocationService extends Service implements GoogleApiClient.Con
                         .setContentTitle(getString(R.string.app_name))
                         .setContentText(text);
 
-        Intent resultIntent = new Intent(this, MainActivity.class);
+        Intent resultIntent = new Intent(this, TrackLocationActivity.class);
 
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-        stackBuilder.addParentStack(MainActivity.class);
+        stackBuilder.addParentStack(TrackLocationActivity.class);
         stackBuilder.addNextIntent(resultIntent);
         PendingIntent resultPendingIntent =
                 stackBuilder.getPendingIntent(
@@ -225,12 +227,11 @@ public class TrackLocationService extends Service implements GoogleApiClient.Con
     private void synchronizeData() {
         new AsyncTask<Void, Void, TrackLocationResponse>() {
             private List<LocationData> locations;
-            private DataHelper dataHelper;
 
             @Override
             protected TrackLocationResponse doInBackground(Void[] params) {
                 TrackLocationResponse response = null;
-                dataHelper = DataHelper.getInstance(getApplicationContext());
+
                 locations = dataHelper.getLocationsToSync();
                 if (locations != null && locations.size() > 0) {
                     String deviceId = TrackLocationPreferencesManager.getDeviceId(getApplicationContext());

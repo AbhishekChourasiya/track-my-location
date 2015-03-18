@@ -6,8 +6,6 @@ import android.content.Intent;
 import android.content.IntentSender;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -19,7 +17,6 @@ import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingRequest;
 import com.google.android.gms.location.LocationServices;
-import com.techmagic.locationapp.BaseActivity;
 import com.techmagic.locationapp.TrackGeofenceService;
 import com.techmagic.locationapp.data.model.GeoPoint;
 import com.techmagic.locationapp.fragment.GeoFenceMapFragment;
@@ -34,7 +31,7 @@ import co.techmagic.hi.R;
 public class TrackGeoFenceActivity extends BaseActivity implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, ResultCallback<Status> {
 
-    private static final String TAG = MainActivity.class.getCanonicalName();
+    private static final String TAG = TrackLocationActivity.class.getCanonicalName();
     private static final int REQUEST_RESOLVE_ERROR = 9999;
     private static final int AREA_RADIUS = 100;
     private static final int TRACKING_DURATION = 2 * 60 * 60 * 1000;

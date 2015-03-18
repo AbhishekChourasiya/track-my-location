@@ -14,7 +14,7 @@ import android.util.Log;
 
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingEvent;
-import com.techmagic.locationapp.activity.MainActivity;
+import com.techmagic.locationapp.activity.TrackLocationActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -71,9 +71,9 @@ public class TrackGeofenceService extends IntentService {
     }
 
     private void showNotification(String notificationDetails) {
-        Intent notificationIntent = new Intent(getApplicationContext(), MainActivity.class);
+        Intent notificationIntent = new Intent(getApplicationContext(), TrackLocationActivity.class);
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-        stackBuilder.addParentStack(MainActivity.class);
+        stackBuilder.addParentStack(TrackLocationActivity.class);
         stackBuilder.addNextIntent(notificationIntent);
         PendingIntent notificationPendingIntent =
                 stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);

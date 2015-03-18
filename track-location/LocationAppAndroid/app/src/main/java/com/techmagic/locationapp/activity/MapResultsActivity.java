@@ -6,7 +6,6 @@ import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.support.v4.app.DialogFragment;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.text.format.DateFormat;
 import android.widget.Button;
@@ -24,7 +23,6 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import co.techmagic.hi.R;
 
 import com.techmagic.locationapp.Utils;
-import com.techmagic.locationapp.data.DataHelper;
 import com.techmagic.locationapp.data.model.LocationData;
 
 import java.util.Calendar;
@@ -39,7 +37,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 
-public class MapResultsActivity extends ActionBarActivity {
+public class MapResultsActivity extends BaseActivity {
     public static final String EXTRA_MARKER_MODE = "EXTRA_MARKER_MODE";
 
     private static final int ZOOM_LEVEL = 15;
@@ -107,9 +105,9 @@ public class MapResultsActivity extends ActionBarActivity {
     private void showData(int lastMilliSeconds) {
         List<LocationData> locations = null;
         if (lastMilliSeconds == 0) {
-            locations = DataHelper.getInstance(getApplicationContext()).getAllLocations();
+            locations = dataHelper.getAllLocations();
         } else {
-            locations = DataHelper.getInstance(getApplicationContext()).getLastLocations(lastMilliSeconds);
+            locations = dataHelper.getLastLocations(lastMilliSeconds);
         }
 
         showMarkersOnMap(locations);
@@ -138,7 +136,7 @@ public class MapResultsActivity extends ActionBarActivity {
         to = calendarTo.getTime().getTime();
 
         List<LocationData> locations = null;
-        locations = DataHelper.getInstance(getApplicationContext()).getLastLocations(from, to);
+        locations = dataHelper.getLastLocations(from, to);
 
         showMarkersOnMap(locations);
     }
