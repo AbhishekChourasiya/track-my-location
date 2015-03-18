@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.os.Bundle;
+import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -24,9 +25,9 @@ import com.techmagic.locationapp.fragment.GeoFenceMapFragment;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import co.techmagic.hi.R;
-
-
 
 public class TrackGeoFenceActivity extends BaseActivity implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, ResultCallback<Status> {
@@ -39,11 +40,16 @@ public class TrackGeoFenceActivity extends BaseActivity implements GoogleApiClie
     private PendingIntent geofencePendingIntent;
     private GoogleApiClient googleApiClient ;
     private GeoFenceMapFragment geoFenceMapFragment;
+    @InjectView(R.id.dl)
+    DrawerLayout drawerLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_track_geo_fence);
+        ButterKnife.inject(this);
+
+        initDrawerToggle(drawerLayout, R.string.title_activity_main);
 
         addGeoFenceMapFragment();
     }
@@ -94,7 +100,7 @@ public class TrackGeoFenceActivity extends BaseActivity implements GoogleApiClie
     private void addGeoFenceMapFragment() {
         geoFenceMapFragment = GeoFenceMapFragment.newInstance();
         getSupportFragmentManager().beginTransaction()
-                .add(android.R.id.content, geoFenceMapFragment)
+                .add(R.id.fragment, geoFenceMapFragment)
                 .commit();
     }
 

@@ -8,6 +8,7 @@ import android.content.IntentSender;
 import android.database.ContentObserver;
 import android.os.Handler;
 import android.os.Bundle;
+import android.support.v4.widget.DrawerLayout;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -49,7 +50,6 @@ public class TrackLocationActivity extends BaseActivity implements GoogleApiClie
     private static final String TAG = TrackLocationActivity.class.getCanonicalName();
     private static final int REQUEST_RESOLVE_ERROR = 9999;
     private GoogleApiClient googleApiClient ;
-    private TrackLocationApplication app;
     private Handler handler = new Handler();
     private AlertDialog dialogEditName;
 
@@ -64,6 +64,8 @@ public class TrackLocationActivity extends BaseActivity implements GoogleApiClie
     @InjectView(R.id.tv_last_update) TextView tvLastUpdate;
     @InjectView(R.id.radio_group) RadioGroup radioGroup;
     @InjectView(R.id.btn_toggle_tracking) Button btnToggleTracking;
+    @InjectView(R.id.dl)
+    DrawerLayout drawerLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,11 +73,11 @@ public class TrackLocationActivity extends BaseActivity implements GoogleApiClie
         setContentView(R.layout.activity_main);
         ButterKnife.inject(this);
 
+        initDrawerToggle(drawerLayout, R.string.title_activity_track_geo_fence);
+
         if (!TrackLocationPreferencesManager.isUserNameChosen(getApplicationContext())) {
             showEditNameDialog();
         }
-
-        app = (TrackLocationApplication) getApplication();
 
         setupRadioGroup();
     }
@@ -170,12 +172,6 @@ public class TrackLocationActivity extends BaseActivity implements GoogleApiClie
         } else {
             startTracking();
         }
-    }
-
-    @OnClick(R.id.btn_geofence)
-    public void geofence() {
-        Intent i = new Intent(this, TrackGeoFenceActivity.class);
-        startActivity(i);
     }
 
     @OnClick(R.id.btn_clear_data)

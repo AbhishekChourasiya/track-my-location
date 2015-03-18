@@ -19,11 +19,7 @@
     <string name="one_hour">1 hour</string>
     <string name="title_activity_maps">Map</string>
     <string name="title_activity_track_geo_fence">Track Geo Fence</string>
-    <string name="title_activity_add_geo_point">AddGeoPointActivity</string>
 
     <string name="action_add_geo_fence">Add Geo Fence</string>
-
-<!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

@@ -31,6 +31,7 @@
         </activity>
         <activity
             android:name="com.techmagic.locationapp.activity.TrackGeoFenceActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/title_activity_track_geo_fence" >
         </activity>
 
