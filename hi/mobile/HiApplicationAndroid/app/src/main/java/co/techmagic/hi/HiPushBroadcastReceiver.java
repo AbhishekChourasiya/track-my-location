@@ -63,6 +63,7 @@ public class HiPushBroadcastReceiver extends ParsePushBroadcastReceiver {
     public void onPushOpen(Context context, Intent intent) {
         Intent i = new Intent(context, MainActivity.class);
         i.putExtras(intent.getExtras());
+        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(i);
     }
 
