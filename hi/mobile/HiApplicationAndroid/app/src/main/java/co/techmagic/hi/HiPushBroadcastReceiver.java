@@ -1,7 +1,12 @@
 package co.techmagic.hi;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
+import android.support.v4.app.NotificationCompat;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -21,11 +26,12 @@ import co.techmagic.hi.webclient.model.FriendsPushResponse;
 public class HiPushBroadcastReceiver extends ParsePushBroadcastReceiver {
 
     private static final String EXTRA_PARSE_DATA = "com.parse.Data";
+    private String message;
 
     @Override
     public void onReceive(Context context, Intent intent) {
         String data = intent.getStringExtra(EXTRA_PARSE_DATA);
-        String message = "No friends near you :(";
+        message = "No friends near you :(";
         if (data != null) {
             try {
                 Gson gson = new GsonBuilder().excludeFieldsWithModifiers(Modifier.TRANSIENT).create();
@@ -57,6 +63,31 @@ public class HiPushBroadcastReceiver extends ParsePushBroadcastReceiver {
         }
         intent.putExtra(EXTRA_PARSE_DATA, jsonObject.toString());
         super.onReceive(context, intent);
+    }
+
+    @Override
+    protected Notification getNotification(Context context, Intent intent) {
+        NotificationCompat.Builder mBuilder =
+                new NotificationCompat.Builder(context)
+                        .setSmallIcon(R.drawable.ic_launcher)
+                        .setContentTitle(context.getString(R.string.app_name))
+                        .setContentText(message);
+
+        Intent resultIntent = new Intent(context, MainActivity.class);
+
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
+        stackBuilder.addParentStack(MainActivity.class);
+        stackBuilder.addNextIntent(resultIntent);
+        PendingIntent resultPendingIntent =
+                stackBuilder.getPendingIntent(
+                        0,
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                );
+        mBuilder.setContentIntent(resultPendingIntent);
+
+        Notification notification = mBuilder.build();
+
+        return notification;
     }
 
     @Override
