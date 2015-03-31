@@ -4,7 +4,7 @@ import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
 
-import co.techmagic.hi.Utils;
+import co.techmagic.hi.util.Utils;
 import co.techmagic.hi.data.Data;
 
 @Table(name = Data.LocationData.TABLE)

@@ -1,4 +1,4 @@
-package co.techmagic.hi.adapter;
+package co.techmagic.hi;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -9,12 +9,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.List;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
-import co.techmagic.hi.R;
-import co.techmagic.hi.util.Utils;
-import co.techmagic.hi.data.model.HiFriendRecord;
+import java.util.List;
+
+import co.techmagic.hi.Utils;
 
 public class HiFriendsAdapter extends RecyclerView.Adapter<HiFriendsAdapter.ViewHolder> {
 
@@ -38,7 +37,6 @@ public class HiFriendsAdapter extends RecyclerView.Adapter<HiFriendsAdapter.View
         final HiFriendRecord friend = friends.get(position);
 
         holder.tvName.setText(friend.getName());
-        holder.tvTime.setText(Utils.formatDateAndTime(friend.getTime()));
         ImageLoader.getInstance().displayImage(friend.getImageUrl(), holder.ivIcon);
         holder.view.setOnClickListener(new View.OnClickListener() {
             @Override

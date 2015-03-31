@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">HiWatch</string>
+    <string name="hello_round">Hello Round World!</string>
+    <string name="hello_square">Hello Square World!</string>
+    <string name="hello_from_hi">Hello, This Is Hi App!</string>
+
+</resources>

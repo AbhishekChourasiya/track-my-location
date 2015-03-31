@@ -1,6 +1,5 @@
 package co.techmagic.hi;
 
-import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -26,9 +25,9 @@ import java.util.List;
 import co.techmagic.hi.data.DataHelper;
 import co.techmagic.hi.data.model.LocationData;
 import co.techmagic.hi.event.AppEvent;
+import co.techmagic.hi.util.Utils;
 import co.techmagic.hi.webclient.HiClient;
 import co.techmagic.hi.webclient.IHiClient;
-import co.techmagic.hi.webclient.model.FriendResult;
 import co.techmagic.hi.webclient.model.TrackLocationRequest;
 import co.techmagic.hi.webclient.model.TrackLocationResponse;
 import de.greenrobot.event.EventBus;

@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.database.ContentObserver;
+import android.os.AsyncTask;
 import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -19,10 +20,17 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.ErrorDialogFragment;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.wearable.MessageApi;
+import com.google.android.gms.wearable.Node;
+import com.google.android.gms.wearable.NodeApi;
+import com.google.android.gms.wearable.Wearable;
 import com.parse.ParseFacebookUtils;
 import com.parse.ParseUser;
 
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -44,7 +52,7 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
     private static final String TAG = MainActivity.class.getCanonicalName();
     private static final int REQUEST_RESOLVE_ERROR = 9999;
 
-    private GoogleApiClient googleApiClient ;
+    private GoogleApiClient googleApiClient;
     private User user;
     private Handler handler = new Handler();
     private HiFriendsAdapter hiFriendsAdapter;
@@ -57,7 +65,6 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
             refreshHiFriendsRecords();
         }
     };
-
 
     @InjectView(R.id.btn_toggle_tracking)
     Button btnToggleTracking;
@@ -98,6 +105,10 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
             return true;
         } else if (id == R.id.action_toggle_tracking) {
             toggleTracking();
+            return true;
+        } else if (id == R.id.action_test_watch) {
+            Intent i = new Intent(this, TestWatchActivity.class);
+            startActivity(i);
             return true;
         }
 
@@ -211,6 +222,7 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
                         .addConnectionCallbacks(this)
                         .addOnConnectionFailedListener(this)
                         .addApi(LocationServices.API)
+                        .addApi(Wearable.API)
                         .build();
                 break;
             case ConnectionResult.SERVICE_MISSING:

@@ -14,4 +14,10 @@
         android:orderInCategory="100"
         app:showAsAction="always" />
 
+    <item android:id="@+id/action_test_watch"
+        android:title="Test Watch"
+        android:orderInCategory="100"
+        android:icon="@android:drawable/ic_menu_rotate"
+        app:showAsAction="always" />
+
 </menu>
