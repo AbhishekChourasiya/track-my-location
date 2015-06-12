@@ -1,0 +1,408 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7702" systemVersion="14D136" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="QJv-ig-PIV">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7701"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+    </dependencies>
+    <scenes>
+        <!--View Controller-->
+        <scene sceneID="tne-QT-ifu">
+            <objects>
+                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="LeLocationTracker" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="y3c-jy-aDJ"/>
+                        <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
+                        <rect key="frame" x="0.0" y="64" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="yUP-qM-Ot3" customClass="SpringView" customModule="LeLocationTracker" customModuleProvider="target">
+                                <rect key="frame" x="200" y="177" width="200" height="30"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="RfA-U2-xub">
+                                        <rect key="frame" x="0.0" y="0.0" width="200" height="30"/>
+                                        <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="14"/>
+                                        <state key="normal" title="Stop Tracking Location">
+                                            <color key="titleColor" red="0.10196078431372549" green="0.11764705882352941" blue="0.21176470588235294" alpha="1" colorSpace="calibratedRGB"/>
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="stopTrackingLocation:" destination="BYZ-38-t0r" eventType="touchUpInside" id="3rN-R4-e5L"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                                <color key="backgroundColor" red="0.46666666666666667" green="0.29411764705882354" blue="0.89411764705882357" alpha="0.40000000000000002" colorSpace="calibratedRGB"/>
+                                <accessibility key="accessibilityConfiguration">
+                                    <accessibilityTraits key="traits" none="YES" button="YES"/>
+                                </accessibility>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="30" id="ceu-Zi-Yyj"/>
+                                </constraints>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="boolean" keyPath="autostart" value="YES"/>
+                                    <userDefinedRuntimeAttribute type="string" keyPath="animation" value="slideUp"/>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="force">
+                                        <real key="value" value="1"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="duration">
+                                        <real key="value" value="1"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="delay">
+                                        <real key="value" value="0.0"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="velocity">
+                                        <real key="value" value="0.69999999999999996"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="damping">
+                                        <real key="value" value="0.69999999999999996"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="x">
+                                        <real key="value" value="0.0"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="y">
+                                        <real key="value" value="0.0"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="boolean" keyPath="autohide" value="YES"/>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="repeatCount">
+                                        <real key="value" value="0.0"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="rotate">
+                                        <real key="value" value="3"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
+                            </view>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="cHy-6n-FHd" customClass="SpringView" customModule="LeLocationTracker" customModuleProvider="target">
+                                <rect key="frame" x="200" y="117" width="200" height="30"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0py-Ei-lJz">
+                                        <rect key="frame" x="0.0" y="0.0" width="200" height="30"/>
+                                        <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="14"/>
+                                        <state key="normal" title="Start Tracking Location">
+                                            <color key="titleColor" red="0.10196078431372549" green="0.11764705882352941" blue="0.21176470588235294" alpha="1" colorSpace="calibratedRGB"/>
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="startTrackingLocation:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Vz5-XS-8G1"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                                <color key="backgroundColor" red="0.46666666666666667" green="0.29411764705882354" blue="0.89411764705882357" alpha="0.40000000000000002" colorSpace="calibratedRGB"/>
+                                <accessibility key="accessibilityConfiguration">
+                                    <accessibilityTraits key="traits" none="YES" button="YES"/>
+                                </accessibility>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="200" id="adq-2f-UrU"/>
+                                    <constraint firstAttribute="height" constant="30" id="iFq-SK-cHI"/>
+                                </constraints>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="boolean" keyPath="autostart" value="YES"/>
+                                    <userDefinedRuntimeAttribute type="string" keyPath="animation" value="slideDown"/>
+                                    <userDefinedRuntimeAttribute type="boolean" keyPath="autohide" value="YES"/>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="duration">
+                                        <real key="value" value="1"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="force">
+                                        <real key="value" value="1"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="damping">
+                                        <real key="value" value="0.69999999999999996"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="velocity">
+                                        <real key="value" value="0.69999999999999996"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="repeatCount">
+                                        <real key="value" value="0.0"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="x">
+                                        <real key="value" value="0.0"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="y">
+                                        <real key="value" value="0.0"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="delay">
+                                        <real key="value" value="0.0"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="rotate">
+                                        <real key="value" value="3"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" red="0.47450980392156861" green="0.49803921568627452" blue="0.89411764705882357" alpha="1" colorSpace="calibratedRGB"/>
+                        <constraints>
+                            <constraint firstAttribute="centerX" secondItem="cHy-6n-FHd" secondAttribute="centerX" id="6Qz-UV-yVw"/>
+                            <constraint firstItem="yUP-qM-Ot3" firstAttribute="leading" secondItem="cHy-6n-FHd" secondAttribute="leading" id="7na-SV-TIc"/>
+                            <constraint firstAttribute="centerX" secondItem="yUP-qM-Ot3" secondAttribute="centerX" id="NVD-4n-aqj"/>
+                            <constraint firstItem="cHy-6n-FHd" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="53" id="kUr-tR-TfW"/>
+                            <constraint firstItem="yUP-qM-Ot3" firstAttribute="top" secondItem="cHy-6n-FHd" secondAttribute="bottom" constant="30" id="ncX-ef-YYF"/>
+                        </constraints>
+                        <userDefinedRuntimeAttributes>
+                            <userDefinedRuntimeAttribute type="boolean" keyPath="autostart" value="YES"/>
+                            <userDefinedRuntimeAttribute type="boolean" keyPath="autohide" value="YES"/>
+                            <userDefinedRuntimeAttribute type="string" keyPath="animation" value="slideDown"/>
+                        </userDefinedRuntimeAttributes>
+                    </view>
+                    <navigationItem key="navigationItem" id="J9n-oO-G9X">
+                        <barButtonItem key="leftBarButtonItem" title="Clear Data" id="RCc-cU-RoF">
+                            <color key="tintColor" red="0.98823529409999999" green="0.46666666670000001" blue="0.054901960780000002" alpha="1" colorSpace="calibratedRGB"/>
+                            <connections>
+                                <action selector="clearTrackedData:" destination="BYZ-38-t0r" id="nzS-rZ-HRp"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem key="rightBarButtonItem" title="Tracker Map" id="fSZ-eu-Phg">
+                            <color key="tintColor" red="0.9882352941176471" green="0.46666666666666667" blue="0.054901960784313725" alpha="1" colorSpace="calibratedRGB"/>
+                            <connections>
+                                <segue destination="Frh-GZ-OdE" kind="presentation" identifier="showMap" id="VgX-jV-y6c"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
+                    <connections>
+                        <outlet property="startView" destination="cHy-6n-FHd" id="v5E-4P-RL5"/>
+                        <outlet property="stopView" destination="yUP-qM-Ot3" id="ewc-RD-oH3"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1067" y="438"/>
+        </scene>
+        <!--Map View Controller-->
+        <scene sceneID="xda-LT-QDg">
+            <objects>
+                <viewController storyboardIdentifier="showMap" id="Frh-GZ-OdE" customClass="MapViewController" customModule="LeLocationTracker" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="9wt-4G-nx4"/>
+                        <viewControllerLayoutGuide type="bottom" id="CzI-oG-4kK"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="zaM-IS-l98">
+                        <rect key="frame" x="0.0" y="64" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="wjK-lE-ECC">
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                            </mapView>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="k4y-Lc-Cla" customClass="SpringView" customModule="LeLocationTracker" customModuleProvider="target">
+                                <rect key="frame" x="16" y="550" width="120" height="30"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xcK-Tm-3WW">
+                                        <rect key="frame" x="0.0" y="0.0" width="120" height="30"/>
+                                        <state key="normal" title="Back">
+                                            <color key="titleColor" red="0.10196078431372549" green="0.11764705882352941" blue="0.21176470588235294" alpha="1" colorSpace="calibratedRGB"/>
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="backButton:" destination="Frh-GZ-OdE" eventType="touchUpInside" id="pfT-Fq-LW0"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="30" id="5XS-1H-ebd"/>
+                                    <constraint firstAttribute="trailing" secondItem="xcK-Tm-3WW" secondAttribute="trailing" id="93u-mH-ngf"/>
+                                    <constraint firstAttribute="width" constant="120" id="Nhi-6Y-5UN"/>
+                                    <constraint firstAttribute="bottom" secondItem="xcK-Tm-3WW" secondAttribute="bottom" id="TG5-S5-lhg"/>
+                                    <constraint firstItem="xcK-Tm-3WW" firstAttribute="top" secondItem="k4y-Lc-Cla" secondAttribute="top" id="mmb-ez-i92"/>
+                                    <constraint firstItem="xcK-Tm-3WW" firstAttribute="leading" secondItem="k4y-Lc-Cla" secondAttribute="leading" id="wnh-ml-tpj"/>
+                                </constraints>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="boolean" keyPath="autostart" value="YES"/>
+                                    <userDefinedRuntimeAttribute type="boolean" keyPath="autohide" value="YES"/>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="force">
+                                        <real key="value" value="2"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="string" keyPath="animation" value="slideDown"/>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="duration">
+                                        <real key="value" value="1.6000000000000001"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="damping">
+                                        <real key="value" value="0.69999999999999996"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="velocity">
+                                        <real key="value" value="0.69999999999999996"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
+                            </view>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="fhi-uk-sO0" customClass="SpringView" customModule="LeLocationTracker" customModuleProvider="target">
+                                <rect key="frame" x="464" y="550" width="120" height="30"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="PNV-qo-Vwe">
+                                        <rect key="frame" x="0.0" y="0.0" width="120" height="30"/>
+                                        <state key="normal" title="History">
+                                            <color key="titleColor" red="0.10196078431372549" green="0.11764705882352941" blue="0.21176470588235294" alpha="1" colorSpace="calibratedRGB"/>
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="historyButton:" destination="Frh-GZ-OdE" eventType="touchUpInside" id="qqn-2t-7Rd"/>
+                                            <segue destination="EoB-K2-qsK" kind="show" identifier="toHistory" id="aQB-6B-M02"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstItem="PNV-qo-Vwe" firstAttribute="top" secondItem="fhi-uk-sO0" secondAttribute="top" id="8Eu-Ye-WUc"/>
+                                    <constraint firstAttribute="height" constant="30" id="Aw7-4K-V00"/>
+                                    <constraint firstAttribute="trailing" secondItem="PNV-qo-Vwe" secondAttribute="trailing" id="RNp-Vj-oJ0"/>
+                                    <constraint firstItem="PNV-qo-Vwe" firstAttribute="leading" secondItem="fhi-uk-sO0" secondAttribute="leading" id="UAH-RG-zob"/>
+                                    <constraint firstAttribute="width" constant="120" id="ddD-87-F6E"/>
+                                    <constraint firstAttribute="bottom" secondItem="PNV-qo-Vwe" secondAttribute="bottom" id="fu3-PS-6bE"/>
+                                </constraints>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="boolean" keyPath="autostart" value="YES"/>
+                                    <userDefinedRuntimeAttribute type="boolean" keyPath="autohide" value="YES"/>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="force">
+                                        <real key="value" value="2"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="duration">
+                                        <real key="value" value="1.6000000000000001"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="string" keyPath="animation" value="slideDown"/>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="damping">
+                                        <real key="value" value="0.69999999999999996"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="velocity">
+                                        <real key="value" value="0.69999999999999996"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="k4y-Lc-Cla" firstAttribute="leading" secondItem="zaM-IS-l98" secondAttribute="leading" constant="16" id="DMs-3S-jh0"/>
+                            <constraint firstItem="CzI-oG-4kK" firstAttribute="top" secondItem="fhi-uk-sO0" secondAttribute="bottom" constant="20" id="GEK-sF-qKz"/>
+                            <constraint firstItem="CzI-oG-4kK" firstAttribute="top" secondItem="wjK-lE-ECC" secondAttribute="bottom" id="GmD-wg-eBx"/>
+                            <constraint firstItem="CzI-oG-4kK" firstAttribute="top" secondItem="k4y-Lc-Cla" secondAttribute="bottom" constant="20" id="Itk-CH-QCD"/>
+                            <constraint firstAttribute="trailing" secondItem="wjK-lE-ECC" secondAttribute="trailing" id="Ttw-PW-kUn"/>
+                            <constraint firstItem="wjK-lE-ECC" firstAttribute="top" secondItem="zaM-IS-l98" secondAttribute="top" id="hLQ-mK-T6l"/>
+                            <constraint firstItem="wjK-lE-ECC" firstAttribute="leading" secondItem="zaM-IS-l98" secondAttribute="leading" id="kbD-Ox-OnU"/>
+                            <constraint firstAttribute="trailing" secondItem="fhi-uk-sO0" secondAttribute="trailing" constant="16" id="sbw-9A-cOP"/>
+                        </constraints>
+                        <userDefinedRuntimeAttributes>
+                            <userDefinedRuntimeAttribute type="string" keyPath="animation" value="zoomIn"/>
+                            <userDefinedRuntimeAttribute type="boolean" keyPath="autostart" value="YES"/>
+                            <userDefinedRuntimeAttribute type="boolean" keyPath="autohide" value="YES"/>
+                            <userDefinedRuntimeAttribute type="number" keyPath="force">
+                                <real key="value" value="1"/>
+                            </userDefinedRuntimeAttribute>
+                            <userDefinedRuntimeAttribute type="number" keyPath="duration">
+                                <real key="value" value="1"/>
+                            </userDefinedRuntimeAttribute>
+                            <userDefinedRuntimeAttribute type="number" keyPath="damping">
+                                <real key="value" value="0.69999999999999996"/>
+                            </userDefinedRuntimeAttribute>
+                            <userDefinedRuntimeAttribute type="number" keyPath="velocity">
+                                <real key="value" value="0.69999999999999996"/>
+                            </userDefinedRuntimeAttribute>
+                        </userDefinedRuntimeAttributes>
+                    </view>
+                    <connections>
+                        <outlet property="leftView" destination="k4y-Lc-Cla" id="Whc-57-3fg"/>
+                        <outlet property="mapView" destination="wjK-lE-ECC" id="YpP-Cp-rTK"/>
+                        <outlet property="rightView" destination="fhi-uk-sO0" id="WJF-iG-FGq"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Igr-wh-hBC" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1726" y="438"/>
+        </scene>
+        <!--History View Controller-->
+        <scene sceneID="jgy-Bq-qE5">
+            <objects>
+                <viewController storyboardIdentifier="HistoryViewController" id="EoB-K2-qsK" customClass="HistoryViewController" customModule="LeLocationTracker" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="ye7-Ng-9i4"/>
+                        <viewControllerLayoutGuide type="bottom" id="izj-Rc-SYa"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="FfR-xn-sOu">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" indicatorStyle="white" dataMode="prototypes" style="plain" separatorStyle="none" allowsSelection="NO" showsSelectionImmediatelyOnTouchBegin="NO" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="d1R-JK-eOP">
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <prototypes>
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="historyTableCell" rowHeight="48" id="eoy-bH-zJG" customClass="HistoryTableCell" customModule="LeLocationTracker" customModuleProvider="target">
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="eoy-bH-zJG" id="Lek-Nv-ZDx">
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Update Time" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gN0-7f-70i">
+                                                    <rect key="frame" x="8" y="4" width="584" height="14"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="14" id="jTX-eo-CPw"/>
+                                                    </constraints>
+                                                    <fontDescription key="fontDescription" name="Helvetica-Bold" family="Helvetica" pointSize="12"/>
+                                                    <color key="textColor" red="0.90909090909090906" green="0.90909090909090906" blue="0.90909090909090906" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Address and Location" lineBreakMode="tailTruncation" numberOfLines="4" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dqg-dC-D16">
+                                                    <rect key="frame" x="8" y="18" width="584" height="28"/>
+                                                    <fontDescription key="fontDescription" name="Helvetica" family="Helvetica" pointSize="12"/>
+                                                    <color key="textColor" red="0.90909090910000001" green="0.90909090910000001" blue="0.90909090910000001" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="gN0-7f-70i" firstAttribute="leading" secondItem="Lek-Nv-ZDx" secondAttribute="leading" constant="8" id="87y-W5-Uv8"/>
+                                                <constraint firstItem="dqg-dC-D16" firstAttribute="leading" secondItem="Lek-Nv-ZDx" secondAttribute="leading" constant="8" id="Mlf-Qe-QgY"/>
+                                                <constraint firstItem="gN0-7f-70i" firstAttribute="leading" secondItem="Lek-Nv-ZDx" secondAttribute="leadingMargin" id="Qhb-ib-5rL"/>
+                                                <constraint firstAttribute="bottom" secondItem="dqg-dC-D16" secondAttribute="bottom" constant="2" id="RD7-Dh-qGz"/>
+                                                <constraint firstItem="gN0-7f-70i" firstAttribute="top" secondItem="Lek-Nv-ZDx" secondAttribute="topMargin" constant="-4" id="UX0-M1-YQ7"/>
+                                                <constraint firstItem="gN0-7f-70i" firstAttribute="trailing" secondItem="Lek-Nv-ZDx" secondAttribute="trailingMargin" id="Wur-z0-X3p"/>
+                                                <constraint firstItem="dqg-dC-D16" firstAttribute="top" secondItem="Lek-Nv-ZDx" secondAttribute="top" constant="18" id="fKD-Ch-6GZ"/>
+                                                <constraint firstAttribute="trailing" secondItem="dqg-dC-D16" secondAttribute="trailing" constant="8" id="ips-dG-6SS"/>
+                                            </constraints>
+                                            <variation key="default">
+                                                <mask key="constraints">
+                                                    <exclude reference="Qhb-ib-5rL"/>
+                                                </mask>
+                                            </variation>
+                                        </tableViewCellContentView>
+                                        <connections>
+                                            <outlet property="dateTimeLabel" destination="gN0-7f-70i" id="dxM-A1-84v"/>
+                                            <outlet property="locationLabel" destination="dqg-dC-D16" id="WPu-eS-52n"/>
+                                        </connections>
+                                    </tableViewCell>
+                                </prototypes>
+                                <connections>
+                                    <outlet property="dataSource" destination="EoB-K2-qsK" id="PeS-hg-7Fy"/>
+                                    <outlet property="delegate" destination="EoB-K2-qsK" id="Kj4-6A-bP8"/>
+                                </connections>
+                            </tableView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="d1R-JK-eOP" firstAttribute="top" secondItem="FfR-xn-sOu" secondAttribute="top" id="0I6-hx-ED5"/>
+                            <constraint firstItem="izj-Rc-SYa" firstAttribute="top" secondItem="d1R-JK-eOP" secondAttribute="bottom" id="1gA-bT-8Vf"/>
+                            <constraint firstAttribute="trailing" secondItem="d1R-JK-eOP" secondAttribute="trailing" id="Lsq-u6-1GC"/>
+                            <constraint firstItem="d1R-JK-eOP" firstAttribute="leading" secondItem="FfR-xn-sOu" secondAttribute="leading" id="W2r-5I-Tau"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="historyTableOutlet" destination="d1R-JK-eOP" id="dQ9-Uu-XXR"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="CH8-dk-lDS" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2404" y="443"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="6yG-aE-Mbf">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="QJv-ig-PIV" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="mft-sa-upz">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="BYZ-38-t0r" kind="relationship" relationship="rootViewController" id="pJl-f3-zOr"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="4zo-cX-0BB" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="403" y="438"/>
+        </scene>
+    </scenes>
+</document>
